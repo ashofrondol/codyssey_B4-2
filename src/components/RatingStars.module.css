@@ -1,0 +1,32 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.star {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  font-size: 18px;
+  padding: 2px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.star:disabled {
+  cursor: default;
+}
+
+.filled {
+  color: var(--color-warning);
+}
+
+.md .star { font-size: 22px; }
+.lg .star { font-size: 28px; }
+
+.count {
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
