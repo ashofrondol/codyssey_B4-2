@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ROUTES } from '../routes.js'
 import Card from '../components/Card.jsx'
 import Button from '../components/Button.jsx'
 
@@ -22,10 +23,10 @@ export default function HomePage() {
         </ul>
 
         <div className="row" style={{ marginTop: 16 }}>
-          <Link to="/books">
+          <Link to={ROUTES.books}>
             <Button>독서 목록 보러가기</Button>
           </Link>
-          <Link to="/books/new">
+          <Link to={ROUTES.newBook}>
             <Button variant="secondary">새 기록 추가</Button>
           </Link>
         </div>

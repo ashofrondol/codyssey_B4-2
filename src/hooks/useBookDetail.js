@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase, BOOKS_TABLE } from '../lib/supabase.js'
+import { getBook } from '../lib/books.js'
 
+/** 상세 조회 훅. `id` 가 바뀌면 다시 요청한다. 쿼리 자체는 `lib/books.js` 에 있다. */
 export function useBookDetail(id) {
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -10,18 +11,14 @@ export function useBookDetail(id) {
     if (!id) return
     setLoading(true)
     setError(null)
-    const { data, error: err } = await supabase
-      .from(BOOKS_TABLE)
-      .select('*')
-      .eq('id', id)
-      .maybeSingle()
-    if (err) {
-      setError(err.message || '항목을 불러오지 못했습니다.')
+    try {
+      setItem(await getBook(id))
+    } catch (e) {
+      setError(e.message || '항목을 불러오지 못했습니다.')
       setItem(null)
-    } else {
-      setItem(data ?? null)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }, [id])
 
   useEffect(() => {

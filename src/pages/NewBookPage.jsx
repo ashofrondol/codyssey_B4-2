@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { ROUTES, bookPath } from '../routes.js'
+import { createBook } from '../lib/books.js'
 import BookForm from '../components/BookForm.jsx'
-import { createBook } from '../hooks/useBooks.js'
 
 export default function NewBookPage() {
   const navigate = useNavigate()
@@ -13,7 +14,7 @@ export default function NewBookPage() {
     setSubmitError(null)
     try {
       const created = await createBook(values)
-      navigate(`/books/${created.id}`, { replace: true })
+      navigate(bookPath(created.id), { replace: true })
     } catch (e) {
       setSubmitError(e.message || '저장에 실패했습니다. 다시 시도해주세요.')
       setSubmitting(false)
@@ -24,14 +25,14 @@ export default function NewBookPage() {
     <section className="stack">
       <div className="row" style={{ justifyContent: 'space-between' }}>
         <h1 style={{ margin: 0 }}>새 독서 기록</h1>
-        <Link to="/books" className="muted">
+        <Link to={ROUTES.books} className="muted">
           ← 목록으로
         </Link>
       </div>
       <BookForm
         submitLabel="등록"
         onSubmit={handleSubmit}
-        onCancel={() => navigate('/books')}
+        onCancel={() => navigate(ROUTES.books)}
         submitting={submitting}
         submitError={submitError}
       />

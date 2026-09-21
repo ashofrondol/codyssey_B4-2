@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { bookPath } from '../routes.js'
 import Card from './Card.jsx'
 import RatingStars from './RatingStars.jsx'
 import styles from './BookList.module.css'
@@ -8,7 +9,7 @@ export default function BookList({ items }) {
     <ul className={styles.list}>
       {items.map((book) => (
         <li key={book.id}>
-          <Link to={`/books/${book.id}`} className={styles.link}>
+          <Link to={bookPath(book.id)} className={styles.link}>
             <Card hoverable>
               <div className={styles.row}>
                 <div className={styles.main}>

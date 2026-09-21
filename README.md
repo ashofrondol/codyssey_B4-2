@@ -334,122 +334,145 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
 
 ### 0.10 ✅ 과제 수행 점검 (명세 대조)
 
-> 점검 방식: 저장소의 실제 소스를 명세의 요구사항 ID 와 1:1 대조. 판정 근거는 파일 경로로 명시.
+> 점검 방식: 저장소의 실제 소스를 명세의 요구사항 ID 와 1:1 대조.
+>
+> **판정 근거의 좌표에 대하여.** 이 표는 처음에 `파일:줄번호` 로 근거를 적었는데, 줄번호는
+> 리팩터링에 견디지 못하는 좌표다. 실제로 2026-09-19 에 README 맨 앞에 「0. 과제 명세」를
+> 삽입했을 때 이 절의 자기 참조 줄번호가 통째로 밀려 거짓이 됐다. 그래서 2026-09-21 의
+> 구조 개선과 함께 근거를 **`파일 › 식별자`** 형태(함수·컴포넌트·상수 이름)로 바꿨다.
+> 이름은 `grep` 으로 찾을 수 있고, 줄이 밀려도 따라 움직이며, 사라지면 `grep` 이 0건을 내서
+> 참조가 깨진 사실이 드러난다.
+>
+> 근거 중 실행 가능한 것들(`grep … → 0건` 류)은 **`npm run lint`(`scripts/check.mjs`) 가 실제로 돌린다.**
+> 문서에만 적힌 규칙은 규칙이 아니라 희망이라, 열 종을 종료 코드로 말하게 옮겼다.
+> 그중 `docs/refs` 는 **이 표 자체를 검사한다** — 여기 적힌 `파일 › 식별자` 가 실제로 존재하는지 확인해,
+> 코드가 움직였는데 문서만 남는 상황을 다시 만들지 않는다.
 
 **종합 판정: 대체로 충족** — 필수 38개 중 충족 34 / 부분 1 / 미충족 0 / 로컬검증불가 3
 
 | ID | 요구사항 (요약) | 판정 | 근거 / 비고 |
 | --- | --- | --- | --- |
 | R1 | 프로젝트 기본 구성 | ✅ 충족 | 아래 R1-1~R1-4 전부 충족 |
-| R1-1 | React 프로젝트로 시작 | ✅ 충족 | `package.json:11-13` — `react ^18.3.1` / `react-dom ^18.3.1` (설치본도 18.3.1). `vite.config.js:1-7` — Vite + `@vitejs/plugin-react` |
-| R1-2 | `pages` / `components` / `hooks`·`lib` 역할 분리 | ✅ 충족 | `src/pages/` 7개, `src/components/` 12개, `src/hooks/` 2개, `src/lib/supabase.js` — 4개 폴더 모두 존재 |
-| R1-3 | 공통 레이아웃(헤더/네비)이 주요 페이지에 적용 | ✅ 충족 | `src/components/Layout.jsx:4-13` (`<Navbar/>` + `<Outlet/>`), `src/App.jsx:14-22` — 모든 라우트가 `Layout` 하위에 중첩(404 포함) |
-| R1-4 | 단일 핵심 데이터 CRUD 수준의 주제 | ✅ 충족 | `src/lib/supabase.js:14` — `BOOKS_TABLE = 'books'` 단일 테이블. 주제 = 독서 기록(제목/저자/별점/메모) |
-| R2 | 라우팅 구성 | ✅ 충족 | `src/App.jsx:13-23` — `react-router-dom` v6 `Routes/Route` |
-| R2-1 | 최소 5개 라우트 동작 | ✅ 충족 | `src/App.jsx:15-20` — `/`, `/books`, `/books/new`, `/books/:id`, `/books/:id/edit`, `/about` = **의미 있는 라우트 6개** (404 제외하고도 5개 초과). ⚠️ 단, README.md:458 은 catch-all 을 포함해 "7개"로 셈 |
-| R2-2 | 목록/상세 라우트 포함 | ✅ 충족 | `src/App.jsx:16` (`/books`), `src/App.jsx:18` (`/books/:id`) |
-| R2-3 | Not Found 페이지 | ✅ 충족 | `src/App.jsx:21` (`path="*"`), `src/pages/NotFoundPage.jsx:5-16` — 공통 `EmptyState` 재사용 + 홈 복귀 버튼 |
-| R2-4 | 네비게이션 링크 제공 | ✅ 충족 | `src/components/Navbar.jsx:4-9` (링크 테이블), `:18-31` (`NavLink` + `isActive` 활성 스타일) |
+| R1-1 | React 프로젝트로 시작 | ✅ 충족 | `package.json › dependencies.react` — `^18.3.1` / `react-dom ^18.3.1` (설치본도 18.3.1). `vite.config.js › defineConfig` — Vite + `@vitejs/plugin-react`. `package.json › engines.node` 가 `^18.0.0 \|\| >=20.0.0` 로 Node 하한도 선언 |
+| R1-2 | `pages` / `components` / `hooks`·`lib` 역할 분리 | ✅ 충족 | `src/pages/` 7개, `src/components/` 13개, `src/hooks/` 2개, `src/lib/` 2개(`supabase.js`·`books.js`), 그리고 `src/routes.js`. 계층 규칙은 문서가 아니라 `scripts/check.mjs › 검사 1·2` 가 강제한다 |
+| R1-3 | 공통 레이아웃(헤더/네비)이 주요 페이지에 적용 | ✅ 충족 | `src/components/Layout.jsx › Layout` (`<Navbar/>` + `<Outlet/>`), `src/App.jsx › App` — 모든 라우트가 `<Route element={<Layout />}>` 하위에 중첩(404 포함) |
+| R1-4 | 단일 핵심 데이터 CRUD 수준의 주제 | ✅ 충족 | `src/lib/supabase.js › BOOKS_TABLE` = `'books'` 단일 테이블. 주제 = 독서 기록(제목/저자/별점/메모) |
+| R2 | 라우팅 구성 | ✅ 충족 | `src/App.jsx › App` — `react-router-dom` v6 `Routes/Route`, 경로는 `src/routes.js › ROUTES` 한 곳에서 온다 |
+| R2-1 | 최소 5개 라우트 동작 | ✅ 충족 | `src/routes.js › ROUTES` — `home` `/`, `books` `/books`, `newBook` `/books/new`, `bookDetail` `/books/:id`, `editBook` `/books/:id/edit`, `about` `/about` = **의미 있는 라우트 6개** (404 제외하고도 5개 초과). `scripts/check.mjs › 검사 4` 가 ROUTES 의 모든 키가 `App.jsx` 에 등록됐는지 양방향으로 대조한다 |
+| R2-2 | 목록/상세 라우트 포함 | ✅ 충족 | `ROUTES.books`, `ROUTES.bookDetail` → `src/App.jsx › App` 의 `<Route path={ROUTES.books}>` / `<Route path={ROUTES.bookDetail}>` |
+| R2-3 | Not Found 페이지 | ✅ 충족 | `ROUTES.notFound` = `'*'`, `src/pages/NotFoundPage.jsx › NotFoundPage` — 공통 `EmptyState` 재사용 + 홈 복귀 버튼 |
+| R2-4 | 네비게이션 링크 제공 | ✅ 충족 | `src/routes.js › NAV_LINKS` (링크 테이블), `src/components/Navbar.jsx › Navbar` (`NavLink` + `isActive` 활성 스타일) |
 | R3 | 컴포넌트 설계 | ✅ 충족 | 아래 R3-1~R3-4 전부 충족 |
-| R3-1 | 최소 8개 재사용 컴포넌트 | ✅ 충족 | `src/components/` 총 12개 중 **prop 기반 10개**: `Button.jsx:3-11`, `Input.jsx:3-13`, `Textarea.jsx:3-13`, `Card.jsx:3`, `Loading.jsx:3`, `ErrorState.jsx:4-7`, `EmptyState.jsx:3-7`, `RatingStars.jsx:5`, `BookList.jsx:6`, `BookForm.jsx:20-27` |
-| R3-2 | 재사용 컴포넌트는 prop 1개 이상 수용 | ✅ 충족 | 예: `Button.jsx:12,17,21` — `variant`/`disabled`/`loading` 에 따라 클래스·비활성·라벨이 달라짐. `RatingStars.jsx:5-8` — `readOnly` 면 클릭 무시. ⚠️ `Navbar.jsx`·`Layout.jsx` 는 prop 무수용이라 카운트 제외했으나, 나머지 10개만으로 8개 임계값 초과 |
-| R3-3 | 페이지 컴포넌트 / UI 컴포넌트 분리 | ✅ 충족 | `grep -rn "lib/supabase" src/components/` 결과 0건 — UI 컴포넌트는 데이터 fetch 를 모름. supabase 호출은 `src/hooks/*` 와 `src/pages/*` 에만 존재 |
-| R3-4 | 로딩/에러/빈 상태를 공통 컴포넌트로 통일 | ✅ 충족 | `Loading.jsx` / `ErrorState.jsx` / `EmptyState.jsx` 를 `BooksPage.jsx:41,43,46`, `BookDetailPage.jsx:32,33,36,63`, `EditBookPage.jsx:30,31,34`, `NotFoundPage.jsx:7` 에서 공유. 페이지별 인라인 `{loading && <p>…</p>}` 중복 없음 |
+| R3-1 | 최소 8개 재사용 컴포넌트 | ✅ 충족 | `src/components/` 총 13개 중 **prop 기반 11개**: `Button` `Input` `Textarea` `Card` `Loading` `ErrorState` `EmptyState` `RatingStars` `BookList` `BookForm` `AsyncView` |
+| R3-2 | 재사용 컴포넌트는 prop 1개 이상 수용 | ✅ 충족 | 예: `Button.jsx › VARIANT_CLASS` 조회 + `disabled \|\| loading` — `variant`/`disabled`/`loading` 에 따라 클래스·비활성·라벨이 달라짐. `RatingStars.jsx › handle` — `readOnly` 면 클릭 무시. ⚠️ `Navbar`·`Layout` 은 prop 무수용이라 카운트 제외했으나, 나머지 11개만으로 8개 임계값 초과 |
+| R3-3 | 페이지 컴포넌트 / UI 컴포넌트 분리 | ✅ 충족 | `grep -rn "lib/supabase" src/components/` 결과 0건 — UI 컴포넌트는 데이터 fetch 를 모른다. **그리고 이 grep 은 이제 실행된다**: `scripts/check.mjs › 검사 1` 이 `src/lib/` 밖의 `lib/supabase` import 를 0건으로 강제하고, 위반 시 `npm run lint` 가 종료 코드 1 을 낸다 |
+| R3-4 | 로딩/에러/빈 상태를 공통 컴포넌트로 통일 | ✅ 충족 | `Loading` / `ErrorState` / `EmptyState` 를 `src/components/AsyncView.jsx › AsyncView` 한 곳이 같은 우선순위(로딩 > 에러 > 빈 > 성공)로 분기하고, `BooksPage` · `BookDetailPage` · `EditBookPage` 가 그것을 공유한다. `NotFoundPage` 는 `EmptyState` 직접 사용. 페이지별 인라인 `{loading && <p>…</p>}` 중복 없음 |
 | R4 | React 방식 상태 관리 | ✅ 충족 | 아래 R4-1~R4-4 전부 충족 |
-| R4-1 | 폼 입력 상태 (controlled input) | ✅ 충족 | `BookForm.jsx:28` (`useState`), `:32-35` (`change` 핸들러), `Input.jsx:26-27` / `Textarea.jsx:26-27` — `value` + `onChange` 쌍 완비 |
-| R4-2 | 목록/상세 데이터 상태 | ✅ 충족 | `hooks/useBooks.js:5` (`items`), `hooks/useBookDetail.js:5` (`item`) |
-| R4-3 | 로딩/에러 상태 | ✅ 충족 | `hooks/useBooks.js:6-7,10-11,17-22`, `hooks/useBookDetail.js:6-7,11-12,18-24`. 페이지 레벨 제출 상태도 별도 보유 (`NewBookPage.jsx:8-9`, `EditBookPage.jsx:15-16`, `BookDetailPage.jsx:16-17`) |
-| R4-4 | 조회/갱신 흐름 최소 1개 커스텀 훅 분리 | ✅ 충족 | **2개**: `src/hooks/useBooks.js:4-30` (`useBooks` — 목록 + `refetch`), `src/hooks/useBookDetail.js:4-32` (`useBookDetail(id)` — `id` 의존 재요청) |
+| R4-1 | 폼 입력 상태 (controlled input) | ✅ 충족 | `BookForm.jsx › values` (`useState`) + `› change` 핸들러, `Input.jsx` / `Textarea.jsx` — `value` + `onChange` 쌍 완비 |
+| R4-2 | 목록/상세 데이터 상태 | ✅ 충족 | `hooks/useBooks.js › items`, `hooks/useBookDetail.js › item` |
+| R4-3 | 로딩/에러 상태 | ✅ 충족 | `hooks/useBooks.js › fetchAll` 의 `loading`/`error`, `hooks/useBookDetail.js › fetchOne` 의 `loading`/`error`. 페이지 레벨 제출 상태도 별도 보유 (`NewBookPage › submitting/submitError`, `EditBookPage › submitting/submitError`, `BookDetailPage › deleting/deleteError`) |
+| R4-4 | 조회/갱신 흐름 최소 1개 커스텀 훅 분리 | ✅ 충족 | **2개**: `src/hooks/useBooks.js › useBooks` (목록 + `refetch`), `src/hooks/useBookDetail.js › useBookDetail(id)` (`id` 의존 재요청). 쿼리 자체는 `src/lib/books.js` 로 내려가, 훅은 React 상태만 맡는다 |
 | R5 | CRUD 구현 | ✅ 충족 | 아래 R5-1~R5-5 전부 충족 |
-| R5-1 | CRUD 가 Supabase/Firebase 원격 데이터 기준 | ✅ 충족 | `src/lib/supabase.js:1-12` (`createClient`), `hooks/useBooks.js:12-15`(select) `:32-40`(insert) `:42-51`(update) `:53-56`(delete). `grep -rn "localStorage\|sessionStorage" src/` **0건**, 하드코딩 목록/mock JSON 없음 |
-| R5-2 | 목록 조회 리스트 UI 렌더링 | ✅ 충족 | `BooksPage.jsx:12,63` → `BookList.jsx:6-26` (`items.map` → `Card` 리스트) |
-| R5-3 | 라우트 파라미터로 상세 조회 | ✅ 충족 | `BookDetailPage.jsx:13,15` (`useParams()` → `useBookDetail(id)`), `useBookDetail.js:16` (`.eq('id', id)`), `:25` — 의존성 배열에 `id` 포함되어 파라미터 변경 시 재요청 |
-| R5-4 | 등록/수정 → 제출 → 성공 시 이동/갱신 | ✅ 충족 | 등록: `NewBookPage.jsx:11-21` (`createBook` → `navigate('/books/'+created.id, {replace:true})`). 수정: `EditBookPage.jsx:18-28` (`updateBook` → 상세로 이동) |
-| R5-5 | 삭제 후 목록 갱신 또는 이동 | ✅ 충족 | `BookDetailPage.jsx:19-30` — `deleteBook(id)` 성공 시 `navigate('/books', {replace:true})`; 목록은 `useBooks` 가 마운트 시 재조회(`useBooks.js:25-27`) |
+| R5-1 | CRUD 가 Supabase/Firebase 원격 데이터 기준 | ✅ 충족 | `src/lib/supabase.js › createClient`, `src/lib/books.js › listBooks`(select) `› getBook`(select) `› createBook`(insert) `› updateBook`(update) `› deleteBook`(delete). `grep -rn "localStorage\|sessionStorage" src/` **0건** — `scripts/check.mjs › 검사 5` 가 이 0건을 매 `npm run lint` 마다 재확인한다. 하드코딩 목록/mock JSON 없음 |
+| R5-2 | 목록 조회 리스트 UI 렌더링 | ✅ 충족 | `BooksPage.jsx › useBooks()` → `<AsyncView>` 성공 분기 → `BookList.jsx › items.map` (`Card` 리스트) |
+| R5-3 | 라우트 파라미터로 상세 조회 | ✅ 충족 | `BookDetailPage.jsx › useParams()` → `useBookDetail(id)`, `lib/books.js › getBook` 의 `.eq('id', id)`, `useBookDetail.js › fetchOne` 의 의존성 배열에 `id` 포함되어 파라미터 변경 시 재요청 |
+| R5-4 | 등록/수정 → 제출 → 성공 시 이동/갱신 | ✅ 충족 | 등록: `NewBookPage.jsx › handleSubmit` (`createBook` → `navigate(bookPath(created.id), {replace:true})`). 수정: `EditBookPage.jsx › handleSubmit` (`updateBook` → `bookPath(id)` 로 이동). 경로는 `src/routes.js › bookPath` 가 만든다 |
+| R5-5 | 삭제 후 목록 갱신 또는 이동 | ✅ 충족 | `BookDetailPage.jsx › handleDelete` — `deleteBook(id)` 성공 시 `navigate(ROUTES.books, {replace:true})`; 목록은 `useBooks.js › useEffect(fetchAll)` 가 마운트 시 재조회 |
 | R6 | 폼 UX | ✅ 충족 | 아래 R6-1~R6-4 전부 충족 |
-| R6-1 | 필수값 검증 존재 | ✅ 충족 | `BookForm.jsx:10-18` (`validate` — 제목 필수 + 길이/별점 범위), `:41-44` — 에러 있으면 `return` 으로 제출 차단 |
-| R6-2 | 에러 메시지가 필드 근처 또는 상단 표시 | ✅ 충족 | 필드 근처: `Input.jsx:31` / `Textarea.jsx:31` (`errorText`), `BookForm.jsx:88` (별점 에러). 상단: `BookForm.jsx:58-62` (`role="alert"` 배너) |
-| R6-3 | 제출 중 비활성화/진행 표시 | ✅ 충족 | `BookForm.jsx:103,107` (`disabled={submitting}` `loading={submitting}`) → `Button.jsx:17` (`disabled \|\| loading`), `:21` (라벨 "처리 중…"). 스피너 CSS: `Status.module.css:25-38` |
-| R6-4 | 요청 실패 시 화면 표시 | ✅ 충족 | 등록 실패 `NewBookPage.jsx:17-19` → `BookForm.jsx:58-62` 배너. 수정 실패 `EditBookPage.jsx:24-26`. 삭제 실패 `BookDetailPage.jsx:26-28,63` (`ErrorState`). 조회 실패 `useBooks.js:16-18` → `BooksPage.jsx:43` (`onRetry={refetch}`) |
-| R7 | 이벤트 ↔ 렌더링 연결 | ✅ 충족 | 아래 R7-1, R7-2 충족. `grep -rn "document.querySelector\|getElementById" src/` 는 `main.jsx:7` (루트 마운트) 1건뿐 — 명령형 DOM 조작 없음 |
-| R7-1 | 이벤트 → 상태 변경 → 렌더링 변화 | ✅ 충족 | `BooksPage.jsx:37` (`onChange` → `setKeyword`) → `:15-22` (`useMemo` 재계산) → `:45-63` (빈 상태/리스트 분기) |
-| R7-2 | 렌더링 변화 지점 최소 3군데 | ✅ 충족 | ① 검색어 입력 → 목록 필터 (`BooksPage.jsx:13,15-22,63`) ② 별점 클릭 → 별 UI 즉시 변경 (`BookForm.jsx:37,87` → `RatingStars.jsx:18-27`) ③ 제출 중 → 버튼 라벨/비활성 전환 (`BookForm.jsx:107` → `Button.jsx:17,21`) ④ 로딩/에러/빈/성공 4분기 전환 (`BooksPage.jsx:41-63`) — **4군데** |
-| R8 | 배포 URL 에서 전체 흐름 동작 | ⬜ 로컬 검증 불가 | **증거 불충분.** 저장소 어디에도 배포된 서비스 URL 이 없다. `README.md:565-123` 은 Vercel 배포 *절차*만 기술. 스크린샷·배포 로그·`.vercel/` 설정 파일도 없음. `git remote -v` 상 GitHub 원격(`github.com/ashofrondol/codyssey_B4-2.git`)은 존재하나 README 에 명시되지 않음 |
+| R6-1 | 필수값 검증 존재 | ✅ 충족 | `src/lib/books.js › validateBook` (제목 필수 + 길이/별점 범위, 한계값은 `› BOOK_LIMITS`), `BookForm.jsx › handleSubmit` 이 에러가 있으면 `return` 으로 제출 차단. 같은 규칙을 `lib/books.js › toRow` 가 저장 직전에 다시 적용해, 폼을 거치지 않은 호출도 잘못된 행을 남기지 못한다 |
+| R6-2 | 에러 메시지가 필드 근처 또는 상단 표시 | ✅ 충족 | 필드 근처: `Input.jsx` / `Textarea.jsx` 의 `errorText`, `BookForm.jsx › styles.errorText` (별점 에러). 상단: `BookForm.jsx › styles.submitError` (`role="alert"` 배너) |
+| R6-3 | 제출 중 비활성화/진행 표시 | ✅ 충족 | `BookForm.jsx › <Button type="submit" disabled={submitting} loading={submitting}>` → `Button.jsx` 의 `disabled \|\| loading` 과 라벨 "처리 중…". 스피너 CSS: `Status.module.css › .spinner` |
+| R6-4 | 요청 실패 시 화면 표시 | ✅ 충족 | 등록 실패 `NewBookPage.jsx › handleSubmit` 의 `catch` → `BookForm` 상단 배너. 수정 실패 `EditBookPage.jsx › handleSubmit` 의 `catch`. 삭제 실패 `BookDetailPage.jsx › deleteError` → `ErrorState`. 조회 실패 `useBooks.js › fetchAll` 의 `catch` → `AsyncView` 의 에러 분기(`onRetry={refetch}`) |
+| R7 | 이벤트 ↔ 렌더링 연결 | ✅ 충족 | 아래 R7-1, R7-2 충족. `grep -rn "document.querySelector\|getElementById" src/` 는 `src/main.jsx › createRoot` (루트 마운트) 1건뿐 — 명령형 DOM 조작 없음 |
+| R7-1 | 이벤트 → 상태 변경 → 렌더링 변화 | ✅ 충족 | `BooksPage.jsx › onChange → setKeyword` → `› filtered` (`useMemo` 재계산) → `<AsyncView>` 의 빈 상태/리스트 분기 |
+| R7-2 | 렌더링 변화 지점 최소 3군데 | ✅ 충족 | ① 검색어 입력 → 목록 필터 (`BooksPage.jsx › keyword/filtered`) ② 별점 클릭 → 별 UI 즉시 변경 (`BookForm.jsx › setRating` → `RatingStars.jsx › handle`) ③ 제출 중 → 버튼 라벨/비활성 전환 (`BookForm.jsx › submitting` → `Button.jsx`) ④ 로딩/에러/빈/성공 4분기 전환 (`AsyncView.jsx › AsyncView`) — **4군데** |
+| R8 | 배포 URL 에서 전체 흐름 동작 | ⬜ 로컬 검증 불가 | **증거 불충분.** 저장소 어디에도 배포된 서비스 URL 이 없다. README `## ☁️ 배포 (Vercel 기준)` 절은 배포 *절차*만 기술. 스크린샷·배포 로그·`.vercel/` 설정 파일도 없음. `git remote -v` 상 GitHub 원격(`github.com/ashofrondol/codyssey_B4-2.git`)은 존재하나 README 에 명시되지 않음 |
 | R8-1 | 배포 환경에서 목록/상세 조회 | ⬜ 로컬 검증 불가 | 코드상 흐름은 완비(R5-2·R5-3 충족). 실제 배포 URL 부재로 동작 확인 불가 |
 | R8-2 | 배포 환경에서 등록/수정/삭제 | ⬜ 로컬 검증 불가 | 코드상 흐름은 완비(R5-4·R5-5 충족). 실제 배포 URL 부재로 동작 확인 불가 |
-| R8-3 | 환경변수 등 설정 누락 없음 | 🟡 부분 충족 | 준비는 양호: `VITE_` 접두사 정확(`src/lib/supabase.js:3-4`, `.env.example:7-8`), 미설정 시 경고(`supabase.js:6-10`), SPA fallback `vercel.json:1-5`, 대시보드 등록 안내 `README.md:570`. **다만** 실제 배포본에서 환경변수가 주입되었는지 확인할 증거가 없어 "일부라도 동작하지 않으면 미충족" 조건을 입증할 수 없다. 추가로 `vercel.json:3` 의 `"destination": "/"` 는 Vercel 권장 표기(`/index.html`)와 다름 |
+| R8-3 | 환경변수 등 설정 누락 없음 | 🟡 부분 충족 | 준비는 양호: `VITE_` 접두사 정확(`src/lib/supabase.js › url/anonKey`, `.env.example`), 미설정 시 경고(`supabase.js › console.warn`), SPA fallback `vercel.json › rewrites`, 대시보드 등록 안내 README `## ☁️ 배포 (Vercel 기준)` 4번. **다만** 실제 배포본에서 환경변수가 주입되었는지 확인할 증거가 없어 "일부라도 동작하지 않으면 미충족" 조건을 입증할 수 없다. 추가로 `vercel.json › rewrites[0].destination` 의 `"/"` 는 Vercel 권장 표기(`/index.html`)와 다름 |
 
 #### 보너스 과제
 
 | ID | 요구사항 (요약) | 판정 | 근거 / 비고 |
 | --- | --- | --- | --- |
 | B1 | 전역 상태 도입 (Context 등) | ❌ 미충족 | `grep -rn "createContext\|useContext" src/` **0건**. 상태는 전부 페이지/컴포넌트 지역 상태 또는 커스텀 훅 내부 |
-| B2 | 메모이제이션 1개 이상 적용 | ✅ 충족 | `BooksPage.jsx:1,15-22` (`useMemo` — 검색 필터 재계산 방지), `useBooks.js:9-23` / `useBookDetail.js:9-25` (`useCallback` — effect 의존성 안정화). 단 `React.memo` 는 미사용 |
-| B3 | 인증 + 보호 라우트 | ❌ 미충족 | `grep -rn "supabase.auth\|signIn\|ProtectedRoute\|PrivateRoute" src/` **0건**. `src/App.jsx:13-23` 에 `/login` 라우트 및 라우트 가드 없음 |
+| B2 | 메모이제이션 1개 이상 적용 | ✅ 충족 | `BooksPage.jsx › filtered` (`useMemo` — 검색 필터 재계산 방지), `useBooks.js › fetchAll` / `useBookDetail.js › fetchOne` (`useCallback` — effect 의존성 안정화). 단 `React.memo` 는 미사용 |
+| B3 | 인증 + 보호 라우트 | ❌ 미충족 | `grep -rn "supabase.auth\|signIn\|ProtectedRoute\|PrivateRoute" src/` **0건**. `src/routes.js › ROUTES` 에 `/login` 항목 및 라우트 가드 없음 |
 
 #### 제약 사항 준수 점검
 
-| 제약 | 판정 | 근거 |
-| --- | --- | --- |
-| React 18 이상 | ✅ | `package.json:11-12` (`^18.3.1`), `node_modules/react/package.json` 설치본 18.3.1 |
-| 백엔드는 Supabase 또는 Firebase 중 **하나** | ✅ | Supabase 단독. `grep -rni firebase src/ package.json README.md` **0건** |
-| `.env` 가 `.gitignore` 에 포함 | ✅ | `.gitignore:12-14` — `.env`, `.env.local`, `.env.*.local` |
-| API Key 커밋 금지 | ✅ | `git ls-files` 에 `.env` 없음(`.env.example` 만 존재, 값은 `YOUR-PROJECT` / `YOUR-ANON-KEY` 플레이스홀더). 전체 히스토리(커밋 1개) 대상 JWT 패턴(`eyJ…`) 검색 0건 |
-| 백엔드 서버 직접 구현 금지 | ✅ | 서버 코드/Express 등 없음. supabase-js 클라이언트 SDK 직접 호출만 존재 |
-| 로컬 상태/하드코딩 데이터로 CRUD 대체 금지 | ✅ | `localStorage`/`sessionStorage`/mock 배열 0건 (R5-1 근거 참조) |
+| 제약 | 판정 | 근거 | 자동 검사 |
+| --- | --- | --- | --- |
+| React 18 이상 | ✅ | `package.json › dependencies.react` (`^18.3.1`), `node_modules/react/package.json` 설치본 18.3.1 | — |
+| 백엔드는 Supabase 또는 Firebase 중 **하나** | ✅ | Supabase 단독. `grep -rni firebase src/ package.json` **0건** (README.md 의 Firebase 언급은 0.4~0.6 이 인용한 명세 원문이라 검색 대상에서 뺀다 — 코드가 아니다) | `check.mjs › spec/single-backend` |
+| `.env` 가 `.gitignore` 에 포함 | ✅ | `.gitignore › # env / secrets` 블록 — `.env`, `.env.local`, `.env.*.local` | `check.mjs › spec/env-ignored` |
+| API Key 커밋 금지 | ✅ | `git ls-files` 에 `.env` 없음(`.env.example` 만 존재, 값은 `YOUR-PROJECT` / `YOUR-ANON-KEY` 플레이스홀더). 히스토리 대상 JWT 패턴(`eyJ…`) 검색 0건 | `check.mjs › spec/no-secret` |
+| 백엔드 서버 직접 구현 금지 | ✅ | 서버 코드/Express 등 없음. supabase-js 클라이언트 SDK 직접 호출만 존재 | — |
+| 로컬 상태/하드코딩 데이터로 CRUD 대체 금지 | ✅ | `localStorage`/`sessionStorage`/mock 배열 0건 (R5-1 근거 참조) | `check.mjs › spec/remote-crud` |
 
 #### 🔍 발견된 격차와 보완 제안
 
 1. **[치명] R8 — 배포 URL 이 저장소 어디에도 없다.**
-   무엇이 부족한가: 명세 0.2 "최종 산출물"은 *동작하는 URL + 코드 + README* 3종 세트를 요구하고, 제출 증거 체크리스트 첫 줄이 "배포된 서비스 URL"이다. `README.md:565-123` 에는 Vercel 배포 *방법*만 있고 실제 접속 주소가 없다.
+   무엇이 부족한가: 명세 0.2 "최종 산출물"은 *동작하는 URL + 코드 + README* 3종 세트를 요구하고, 제출 증거 체크리스트 첫 줄이 "배포된 서비스 URL"이다. README `## ☁️ 배포 (Vercel 기준)` 절에는 Vercel 배포 *방법*만 있고 실제 접속 주소가 없다.
    어떻게 고치면 되는가: Vercel/Netlify 에 실제 배포한 뒤 README 최상단에 `🔗 배포 URL: https://…` 와 `🔗 GitHub: https://github.com/ashofrondol/codyssey_B4-2` 두 줄을 추가하라. 배포 후 `/books/<실제 id>` 를 **주소창에 직접 입력하고 새로고침**해서 404 가 아닌지, 목록·등록·수정·삭제가 전부 도는지 확인한 스크린샷을 함께 남기면 R8-1·R8-2 의 로컬 검증 불가 상태가 해소된다.
 
 2. **[중요] R8-3 — 배포 환경 변수 주입 증거가 없다.**
-   무엇이 부족한가: 코드 측 준비(`VITE_` 접두사, `.env.example`, 미설정 경고, `vercel.json` rewrite)는 모두 갖춰져 있으나, Vercel 대시보드에 `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` 를 등록했다는 증거가 없다. 접두사만 맞고 대시보드 등록을 빠뜨리면 배포본에서 목록이 영구 빈 화면이 되는데, 이때 `supabase.js:6-10` 의 경고는 콘솔에만 찍혀 사용자 화면에는 아무 단서가 없다.
-   어떻게 고치면 되는가: (a) 배포본 첫 화면 스크린샷을 README 에 첨부, (b) `vercel.json:3` 의 `"destination": "/"` 를 Vercel 문서 표준인 `"/index.html"` 로 바꾸면 의도가 더 분명하다, (c) 환경변수 누락을 콘솔 경고가 아니라 화면 배너(`ErrorState`)로 띄우면 배포 사고를 즉시 알 수 있다.
+   무엇이 부족한가: 코드 측 준비(`VITE_` 접두사, `.env.example`, 미설정 경고, `vercel.json` rewrite)는 모두 갖춰져 있으나, Vercel 대시보드에 `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` 를 등록했다는 증거가 없다. 접두사만 맞고 대시보드 등록을 빠뜨리면 배포본에서 목록이 영구 빈 화면이 되는데, 이때 `supabase.js › console.warn` 은 콘솔에만 찍혀 사용자 화면에는 아무 단서가 없다.
+   어떻게 고치면 되는가: (a) 배포본 첫 화면 스크린샷을 README 에 첨부, (b) `vercel.json › rewrites[0].destination` 의 `"/"` 를 Vercel 문서 표준인 `"/index.html"` 로 바꾸면 의도가 더 분명하다, (c) 환경변수 누락을 콘솔 경고가 아니라 화면 배너(`ErrorState`)로 띄우면 배포 사고를 즉시 알 수 있다.
 
 3. **[경미] B1 / B3 미구현 (보너스, 감점 아님).**
-   B1 은 테마 토글이나 전역 토스트 알림을 `createContext` 로 빼는 것이 가장 작은 비용이고, B3 는 Supabase Auth 매직링크 + `<Route element={<RequireAuth/>}>` 중첩 가드로 `/login` 라우트를 채우면 된다(명세 해설대로 B1·B3 는 세트로 묶기 좋다).
+   B1 은 테마 토글이나 전역 토스트 알림을 `createContext` 로 빼는 것이 가장 작은 비용이고, B3 는 Supabase Auth 매직링크 + `<Route element={<RequireAuth/>}>` 중첩 가드로 `ROUTES.login` 을 채우면 된다(명세 해설대로 B1·B3 는 세트로 묶기 좋다).
 
 4. **[경미] README 의 자체 집계가 실제보다 후하다 (요구사항 판정 자체에는 영향 없음).**
-   `README.md:458` 은 catch-all `*` 을 포함해 "라우팅 7개"로, `README.md:475,132` 는 prop 을 받지 않는 `Navbar`·`Layout` 을 포함해 "재사용 UI 12개"로 센다. 명세 0.9 함정 1·2 의 셈법(404 제외, prop 수용분만)으로는 각각 6개·10개다. 둘 다 임계값(5개·8개)은 여유롭게 넘으므로 판정은 충족이지만, 구술 평가에서 "12개"라고 답하면 R3-2 정의를 되묻는 질문이 들어온다. 실제 셈법 기준으로 문구를 고쳐두는 편이 안전하다.
+   README `## ✨ 기능 요약` 은 catch-all `*` 을 포함해 "라우팅 7개"로, `## 🧱 폴더 구조` 는 prop 을 받지 않는 `Navbar`·`Layout` 을 포함해 "재사용 UI 13개"로 센다. 명세 0.9 함정 1·2 의 셈법(404 제외, prop 수용분만)으로는 각각 6개·11개다. 둘 다 임계값(5개·8개)은 여유롭게 넘으므로 판정은 충족이지만, 구술 평가에서 "13개"라고 답하면 R3-2 정의를 되묻는 질문이 들어온다. 실제 셈법 기준으로 문구를 고쳐두는 편이 안전하다.
 
 5. **[경미, 요구사항 외 — 학습 지도 G3 관련] `useBookDetail` 에 경쟁 상태(race condition) 방어가 없다.**
-   `src/hooks/useBookDetail.js:27-29` 의 effect 에는 클린업이 없어, 상세 페이지를 빠르게 왔다갔다 하면 먼저 보낸 요청의 늦은 응답이 나중 상태를 덮어쓸 수 있다. 명세 0.8 표의 G3 항목이 정확히 이 질문("이전 요청의 응답이 나중에 도착해 화면을 덮어쓸 수 있는가")을 구술 문항으로 예고한다. `let alive = true` 플래그 또는 `AbortController` 를 추가하고 `return () => { alive = false }` 로 막아두면 답변까지 함께 준비된다. `useBooks.js:25-27` 도 동일.
+   `src/hooks/useBookDetail.js › useEffect(fetchOne)` 에는 클린업이 없어, 상세 페이지를 빠르게 왔다갔다 하면 먼저 보낸 요청의 늦은 응답이 나중 상태를 덮어쓸 수 있다. 명세 0.8 표의 G3 항목이 정확히 이 질문("이전 요청의 응답이 나중에 도착해 화면을 덮어쓸 수 있는가")을 구술 문항으로 예고한다. `let alive = true` 플래그 또는 `AbortController` 를 추가하고 `return () => { alive = false }` 로 막아두면 답변까지 함께 준비된다. `useBooks.js › useEffect(fetchAll)` 도 동일.
 
-6. **[경미, 구조 정리] CRUD 헬퍼가 훅 파일 안에 산다.**
-   `createBook`/`updateBook`/`deleteBook` (`src/hooks/useBooks.js:32-56`)은 훅이 아닌 순수 async 함수인데 `hooks/` 에 있어, `BookDetailPage.jsx:4` 처럼 "훅 파일에서 훅이 아닌 것을 import" 하는 모양이 된다. 명세 R1-2 는 `hooks` **또는** `lib` 를 허용하므로 위반은 아니지만, `src/lib/books.js` 로 옮기면 R3-3(관심사 분리) 설명이 훨씬 깔끔해진다.
+6. **[해소됨 · 2026-09-21] CRUD 헬퍼가 훅 파일 안에 산다.**
+   ~~`createBook`/`updateBook`/`deleteBook` 이 훅이 아닌 순수 async 함수인데 `hooks/` 에 있다~~ → `src/lib/books.js` 로 내려보냈다. 조회 쿼리(`listBooks`/`getBook`)와 검증 규칙(`validateBook`/`BOOK_LIMITS`)도 함께 옮겨, `hooks/` 는 React 상태만, `lib/` 는 Supabase 와 규칙만 맡는다. 검증 규칙이 `BookForm` 안에만 있어 저장 계층과 갈라져 있던 문제도 같이 사라졌다 — 폼과 `toRow()` 가 같은 `validateBook` 을 읽는다. 이 경계는 `scripts/check.mjs › layer/supabase`·`layer/direction` 이 강제한다.
 
-7. **[경미, 동작] `index.html:5` 가 존재하지 않는 파비콘을 참조한다.**
+7. **[경미, 동작] `index.html` 이 존재하지 않는 파비콘을 참조한다.**
    `href="/vite.svg"` 인데 `public/` 디렉터리 자체가 없어 배포본에서 파비콘 404 가 난다. 기능에는 영향 없으나 `public/vite.svg` 를 추가하거나 해당 `<link>` 를 지우면 된다.
 
 #### 🧪 실행 검증 기록
 
-저장소를 변경하지 않는 범위에서만 검증했다. `npm install` / `npm run build`(=`dist/` 생성) / 개발 서버 기동은 **실행하지 않았다** — 각각 네트워크 설치 또는 저장소 내 파일 생성을 유발하기 때문.
-
-1. **JSX/ES 모듈 전체 파싱·번들 검증 — 실행함, 성공**
+1. **프로덕션 빌드 — 실행함, 성공** (2026-09-21)
    ```
-   ./node_modules/.bin/esbuild src/main.jsx --bundle \
-     --outfile=<scratchpad>/b42_build/bundle.js \
-     --loader:.js=jsx --format=esm --loader:.css=empty \
-     --external:react --external:react-dom/client \
-     --external:react-router-dom --external:@supabase/supabase-js
+   npm run build   →  ✓ 110 modules transformed / ✓ built in 1.39s / exit 0
    ```
-   → `bundle.js 29.5kb`, `bundle.css 5.7kb`, `⚡ Done in 11ms`, **exit 0**. 출력은 전부 scratchpad 로 보냈고 저장소에는 아무것도 쓰지 않았다. `src/` 전 파일의 구문 오류·import 경로 오류·CSS Modules 참조 누락이 없음을 확인 (미해결 import 가 하나라도 있으면 esbuild 번들이 실패한다).
+   `dist/` 는 `.gitignore` 에 있어 저장소에 남지 않는다. 구조 개선 직전의 같은 명령은 `✓ 107 modules transformed`(exit 0) 였다 — 늘어난 3개는 새로 추가한 `src/routes.js`, `src/lib/books.js`, `src/components/AsyncView.jsx` 다.
 
-2. **정적 검색 검증 — 실행함**
+2. **저장소 규칙 검사 — 실행함, 성공** (2026-09-21)
+   ```
+   npm run lint    →  ✅ 검사 10종 통과 — 소스 27개 / exit 0
+   ```
+   `scripts/check.mjs` 는 의존성 0(Node 내장 모듈만)이라 `npm install` 없이도 돈다.
+   **검사가 실제로 깨지는지 일부러 확인했다** — 아래 10가지를 하나씩 되돌려 보고 전부 exit 1 과 지목 메시지를 확인한 뒤 원복했다:
+   라우트 리터럴 복귀 / `App.jsx` 에서 라우트 1개 제거 / `ROUTES` 에 없는 키를 `App.jsx` 가 사용 /
+   페이지가 `lib/supabase` 직접 import / 훅이 페이지를 import(의존 방향 역전) / `localStorage` 사용 /
+   `firebase` import / `.gitignore` 에서 `.env` 제거 / `.env.example` 에 JWT 모양 값 삽입 /
+   README 가 가리키는 함수 이름을 코드에서 변경(`validateBook` → `checkBook`) · 없는 파일을 근거로 지목.
+   깨지지 않는 검사는 검사가 아니다.
+
+3. **검증 규칙 이관의 동등성 — 실행함, 차이 0건** (2026-09-21)
+   `lib/books.js › validateBook`/`normalizeBook` 이 이관 전 `BookForm` 의 `validate`/인라인 trim 과 같은 결과를 내는지 6개 입력(정상·공백만·길이 초과·앞뒤 공백·별점 6·별점 -1)으로 대조했다 → **차이 0건**.
+
+4. **정적 검색 검증 — 실행함** (이제 `npm run lint` 가 같은 사실을 매번 재확인한다)
    - `grep -rn "localStorage\|sessionStorage" src/` → 0건 (R5-1 위반 없음)
-   - `grep -rni "firebase" src/ package.json README.md` → 0건 (백엔드 단일 선택 준수)
+   - `grep -rni "firebase" src/ package.json` → 0건 (백엔드 단일 선택 준수).
+     README.md 는 대상에서 제외한다 — 0.4~0.6 이 명세 원문("Supabase 또는 Firebase 중 하나")을 그대로 인용하고 있어 14건이 나오지만, 전부 과제 설명 문장이지 구현이 아니다.
    - `grep -rn "createContext\|useContext" src/` → 0건 (B1 미구현 확정)
    - `grep -rn "supabase.auth\|signIn\|ProtectedRoute\|PrivateRoute" src/` → 0건 (B3 미구현 확정)
-   - `grep -rn "document.querySelector\|getElementById" src/` → `src/main.jsx:7` 1건(루트 마운트)만 (R7 선언적 렌더링 준수)
+   - `grep -rn "document.querySelector\|getElementById" src/` → `src/main.jsx` 1건(루트 마운트)만 (R7 선언적 렌더링 준수)
    - `grep -rn "lib/supabase" src/components/` → 0건 (R3-3 Presentational 분리 준수)
 
-3. **비밀정보 유출 점검 — 실행함**
-   `git ls-files` 에 `.env` 없음, 추적 파일은 `.env.example` 뿐(플레이스홀더 값). 전체 히스토리(커밋 1개 `6683992`) 대상 `eyJ[A-Za-z0-9_-]{10,}` (Supabase anon key 의 JWT 접두) 검색 0건. `.gitignore:12-14` 에 `.env` 계열 3종 등재 확인.
+5. **비밀정보 유출 점검 — 실행함**
+   `git ls-files` 에 `.env` 없음, 추적 파일은 `.env.example` 뿐(플레이스홀더 값). JWT 접두(`eyJ[A-Za-z0-9_-]{10,}`) 검색 0건. `.gitignore` 의 `# env / secrets` 블록에 `.env` 계열 3종 등재 확인.
 
-4. **런타임/브라우저 동작 — 미실행**
-   실제 렌더링, Supabase 원격 CRUD 왕복, 배포 URL 접속은 유효한 Supabase 프로젝트 자격 증명과 네트워크가 필요해 검증하지 않았다. 해당 항목(R8, R8-1, R8-2)은 ⬜ 로 판정하고 저장소 내 대체 증거의 충분성만 평가했다.
+6. **런타임/브라우저 동작 — 부분 실행**
+   `Button` 과 `AsyncView` 는 서버 렌더링으로 실제 출력을 확인했다 — `variant="primry"` 오타가 `console.error` 경고 1건 + `primary` 스타일 대체로 이어지는 것, `AsyncView` 의 4분기가 로딩 > 에러 > 빈 > 성공 순서로 갈리고 성공 분기에서만 데이터를 건드리는 것.
+   반면 실제 브라우저 렌더링, Supabase 원격 CRUD 왕복, 배포 URL 접속은 유효한 Supabase 자격 증명과 네트워크가 필요해 검증하지 않았다. 해당 항목(R8, R8-1, R8-2)은 ⬜ 로 판정하고 저장소 내 대체 증거의 충분성만 평가했다.
 
 ---
 
@@ -464,15 +487,19 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
 ## 🧱 폴더 구조
 
 ```
+scripts/
+└── check.mjs              # 저장소 규칙 검사 (npm run lint, 의존성 0)
 src/
-├── App.jsx                # 라우트 정의
+├── App.jsx                # 라우트 정의 (경로는 routes.js 에서 온다)
 ├── main.jsx               # 진입점 (BrowserRouter)
-├── lib/
-│   └── supabase.js        # Supabase 클라이언트
-├── hooks/
-│   ├── useBooks.js        # 목록 조회 훅 + CRUD 헬퍼
+├── routes.js              # 라우트 경로의 단일 정의 + 경로 빌더(bookPath 등)
+├── lib/                   # 바깥 세계(Supabase)와 규칙
+│   ├── supabase.js        # Supabase 클라이언트
+│   └── books.js           # books 데이터 접근 + 검증 규칙(validateBook/BOOK_LIMITS)
+├── hooks/                 # React 상태만 담당 (쿼리는 lib/books.js 가 맡는다)
+│   ├── useBooks.js        # 목록 조회 훅
 │   └── useBookDetail.js   # 상세 조회 훅
-├── components/            # 재사용 UI (12개)
+├── components/            # 재사용 UI (13개)
 │   ├── Button.jsx
 │   ├── Input.jsx
 │   ├── Textarea.jsx
@@ -480,6 +507,7 @@ src/
 │   ├── Loading.jsx
 │   ├── ErrorState.jsx
 │   ├── EmptyState.jsx
+│   ├── AsyncView.jsx      # 로딩 / 에러 / 빈 / 성공 4분기를 한 곳에
 │   ├── RatingStars.jsx
 │   ├── BookList.jsx
 │   ├── BookForm.jsx
@@ -495,6 +523,9 @@ src/
 │   └── NotFoundPage.jsx
 └── styles/global.css
 ```
+
+**의존 방향은 한 방향이다** — `lib` ← `hooks` ← `pages`, 그리고 `components` 는 데이터 계층을 모른다.
+이 규칙은 주석이 아니라 `scripts/check.mjs` 가 강제한다. 어기면 `npm run lint` 가 종료 코드 1 을 낸다.
 
 ## 🛠 기술 스택
 
@@ -562,6 +593,26 @@ npm run build      # dist/ 생성
 npm run preview    # 빌드 결과 미리보기
 ```
 
+### 6) 저장소 규칙 검사
+
+```bash
+npm run lint       # scripts/check.mjs — 계층·라우트·과제 제약·문서 참조 10종
+npm run verify     # lint + build 를 한 번에
+```
+
+`scripts/check.mjs` 는 Node 내장 모듈만 쓰므로 `npm install` 전에도 돌아간다. 검사하는 것:
+
+| 규칙 | 무엇을 막는가 |
+| --- | --- |
+| `layer/supabase` | `src/lib/` 밖에서 Supabase 클라이언트를 직접 부르는 것 |
+| `layer/direction` | 의존 방향 역전 (`lib`→`hooks`, `hooks`→`pages`, `components`→`pages`) |
+| `routes/literal` | `src/routes.js` 밖에 라우트 경로 문자열을 다시 적는 것 |
+| `routes/unmounted` · `routes/undeclared` | `ROUTES` 표와 `App.jsx` 의 `<Route>` 등록이 어긋나는 것 |
+| `spec/remote-crud` | `localStorage`/`sessionStorage` 로 원격 CRUD 를 대체하는 것 (명세 R5-1) |
+| `spec/single-backend` | Firebase 가 섞여 들어오는 것 (명세 0.6) |
+| `spec/env-ignored` · `spec/no-secret` | `.env` 가 추적되거나 anon key 가 소스에 박히는 것 (명세 0.6) |
+| `docs/refs` | README 0.10 의 판정 근거가 없는 파일·**옮겨간 경로**·사라진 이름을 가리키는 것 (근거에 적힌 이름은 하나도 빠짐없이 그 파일 안에 있어야 한다) |
+
 ## ☁️ 배포 (Vercel 기준)
 
 1. 이 레포지토리를 GitHub 에 푸시합니다.
@@ -576,15 +627,16 @@ Netlify 를 쓴다면 `_redirects` 에 `/* /index.html 200` 한 줄을 추가하
 
 | 평가 항목                | 어디에 구현되어 있나요?                                                 |
 | ------------------------ | ---------------------------------------------------------------------- |
-| 5개 이상 라우트          | `src/App.jsx` (7개 라우트)                                              |
+| 5개 이상 라우트          | `src/routes.js` 의 `ROUTES` (7개) + `src/App.jsx` 가 그 표를 그린다       |
 | 목록 / 상세 페이지       | `BooksPage`, `BookDetailPage`                                          |
-| CRUD                     | `useBooks.js` 의 `createBook` / `updateBook` / `deleteBook` + `useBooks` |
-| 8개 이상 재사용 컴포넌트 | `src/components/` 아래 12개 컴포넌트                                    |
-| 폼 검증 + 제출 상태      | `BookForm.jsx` 의 `validate`, `submitting`, `submitError`               |
-| 로딩 / 에러 / 빈 상태    | `Loading.jsx`, `ErrorState.jsx`, `EmptyState.jsx` 를 모든 페이지에서 재사용 |
-| 커스텀 훅                | `useBooks`, `useBookDetail`                                            |
+| CRUD                     | `src/lib/books.js` 의 `listBooks`/`getBook`/`createBook`/`updateBook`/`deleteBook` |
+| 8개 이상 재사용 컴포넌트 | `src/components/` 아래 13개 (그중 prop 수용 11개)                        |
+| 폼 검증 + 제출 상태      | `lib/books.js` 의 `validateBook`/`BOOK_LIMITS` + `BookForm.jsx` 의 `submitting`, `submitError` |
+| 로딩 / 에러 / 빈 상태    | `AsyncView.jsx` 하나가 `Loading`/`ErrorState`/`EmptyState` 를 같은 순서로 분기 |
+| 커스텀 훅                | `useBooks`, `useBookDetail` (상태만 담당, 쿼리는 `lib/books.js`)         |
 | 상태 → 렌더링 연결       | 검색어 입력 → 목록 필터, 폼 입력 → 별점 미리보기, 저장 성공 → 라우트 이동 |
-| Not Found 처리           | `NotFoundPage.jsx` + `path="*"`                                         |
+| Not Found 처리           | `NotFoundPage.jsx` + `ROUTES.notFound` (`'*'`)                          |
+| 설계 규칙의 실행         | `scripts/check.mjs` — 위 경계들을 `npm run lint` 가 종료 코드로 말한다     |
 
 ## ❓ 자주 발생하는 문제
 

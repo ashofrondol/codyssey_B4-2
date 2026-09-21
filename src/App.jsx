@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { ROUTES } from './routes.js'
 import Layout from './components/Layout.jsx'
 import HomePage from './pages/HomePage.jsx'
 import BooksPage from './pages/BooksPage.jsx'
@@ -12,13 +13,13 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/books" element={<BooksPage />} />
-        <Route path="/books/new" element={<NewBookPage />} />
-        <Route path="/books/:id" element={<BookDetailPage />} />
-        <Route path="/books/:id/edit" element={<EditBookPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path={ROUTES.home} element={<HomePage />} />
+        <Route path={ROUTES.books} element={<BooksPage />} />
+        <Route path={ROUTES.newBook} element={<NewBookPage />} />
+        <Route path={ROUTES.bookDetail} element={<BookDetailPage />} />
+        <Route path={ROUTES.editBook} element={<EditBookPage />} />
+        <Route path={ROUTES.about} element={<AboutPage />} />
+        <Route path={ROUTES.notFound} element={<NotFoundPage />} />
       </Route>
     </Routes>
   )
