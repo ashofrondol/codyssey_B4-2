@@ -346,7 +346,7 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
 | R1-3 | 공통 레이아웃(헤더/네비)이 주요 페이지에 적용 | ✅ 충족 | `src/components/Layout.jsx:4-13` (`<Navbar/>` + `<Outlet/>`), `src/App.jsx:14-22` — 모든 라우트가 `Layout` 하위에 중첩(404 포함) |
 | R1-4 | 단일 핵심 데이터 CRUD 수준의 주제 | ✅ 충족 | `src/lib/supabase.js:14` — `BOOKS_TABLE = 'books'` 단일 테이블. 주제 = 독서 기록(제목/저자/별점/메모) |
 | R2 | 라우팅 구성 | ✅ 충족 | `src/App.jsx:13-23` — `react-router-dom` v6 `Routes/Route` |
-| R2-1 | 최소 5개 라우트 동작 | ✅ 충족 | `src/App.jsx:15-20` — `/`, `/books`, `/books/new`, `/books/:id`, `/books/:id/edit`, `/about` = **의미 있는 라우트 6개** (404 제외하고도 5개 초과). ⚠️ 단, README.md:8 은 catch-all 을 포함해 "7개"로 셈 |
+| R2-1 | 최소 5개 라우트 동작 | ✅ 충족 | `src/App.jsx:15-20` — `/`, `/books`, `/books/new`, `/books/:id`, `/books/:id/edit`, `/about` = **의미 있는 라우트 6개** (404 제외하고도 5개 초과). ⚠️ 단, README.md:458 은 catch-all 을 포함해 "7개"로 셈 |
 | R2-2 | 목록/상세 라우트 포함 | ✅ 충족 | `src/App.jsx:16` (`/books`), `src/App.jsx:18` (`/books/:id`) |
 | R2-3 | Not Found 페이지 | ✅ 충족 | `src/App.jsx:21` (`path="*"`), `src/pages/NotFoundPage.jsx:5-16` — 공통 `EmptyState` 재사용 + 홈 복귀 버튼 |
 | R2-4 | 네비게이션 링크 제공 | ✅ 충족 | `src/components/Navbar.jsx:4-9` (링크 테이블), `:18-31` (`NavLink` + `isActive` 활성 스타일) |
@@ -374,10 +374,10 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
 | R7 | 이벤트 ↔ 렌더링 연결 | ✅ 충족 | 아래 R7-1, R7-2 충족. `grep -rn "document.querySelector\|getElementById" src/` 는 `main.jsx:7` (루트 마운트) 1건뿐 — 명령형 DOM 조작 없음 |
 | R7-1 | 이벤트 → 상태 변경 → 렌더링 변화 | ✅ 충족 | `BooksPage.jsx:37` (`onChange` → `setKeyword`) → `:15-22` (`useMemo` 재계산) → `:45-63` (빈 상태/리스트 분기) |
 | R7-2 | 렌더링 변화 지점 최소 3군데 | ✅ 충족 | ① 검색어 입력 → 목록 필터 (`BooksPage.jsx:13,15-22,63`) ② 별점 클릭 → 별 UI 즉시 변경 (`BookForm.jsx:37,87` → `RatingStars.jsx:18-27`) ③ 제출 중 → 버튼 라벨/비활성 전환 (`BookForm.jsx:107` → `Button.jsx:17,21`) ④ 로딩/에러/빈/성공 4분기 전환 (`BooksPage.jsx:41-63`) — **4군데** |
-| R8 | 배포 URL 에서 전체 흐름 동작 | ⬜ 로컬 검증 불가 | **증거 불충분.** 저장소 어디에도 배포된 서비스 URL 이 없다. `README.md:115-123` 은 Vercel 배포 *절차*만 기술. 스크린샷·배포 로그·`.vercel/` 설정 파일도 없음. `git remote -v` 상 GitHub 원격(`github.com/ashofrondol/codyssey_B4-2.git`)은 존재하나 README 에 명시되지 않음 |
+| R8 | 배포 URL 에서 전체 흐름 동작 | ⬜ 로컬 검증 불가 | **증거 불충분.** 저장소 어디에도 배포된 서비스 URL 이 없다. `README.md:565-123` 은 Vercel 배포 *절차*만 기술. 스크린샷·배포 로그·`.vercel/` 설정 파일도 없음. `git remote -v` 상 GitHub 원격(`github.com/ashofrondol/codyssey_B4-2.git`)은 존재하나 README 에 명시되지 않음 |
 | R8-1 | 배포 환경에서 목록/상세 조회 | ⬜ 로컬 검증 불가 | 코드상 흐름은 완비(R5-2·R5-3 충족). 실제 배포 URL 부재로 동작 확인 불가 |
 | R8-2 | 배포 환경에서 등록/수정/삭제 | ⬜ 로컬 검증 불가 | 코드상 흐름은 완비(R5-4·R5-5 충족). 실제 배포 URL 부재로 동작 확인 불가 |
-| R8-3 | 환경변수 등 설정 누락 없음 | 🟡 부분 충족 | 준비는 양호: `VITE_` 접두사 정확(`src/lib/supabase.js:3-4`, `.env.example:7-8`), 미설정 시 경고(`supabase.js:6-10`), SPA fallback `vercel.json:1-5`, 대시보드 등록 안내 `README.md:120`. **다만** 실제 배포본에서 환경변수가 주입되었는지 확인할 증거가 없어 "일부라도 동작하지 않으면 미충족" 조건을 입증할 수 없다. 추가로 `vercel.json:3` 의 `"destination": "/"` 는 Vercel 권장 표기(`/index.html`)와 다름 |
+| R8-3 | 환경변수 등 설정 누락 없음 | 🟡 부분 충족 | 준비는 양호: `VITE_` 접두사 정확(`src/lib/supabase.js:3-4`, `.env.example:7-8`), 미설정 시 경고(`supabase.js:6-10`), SPA fallback `vercel.json:1-5`, 대시보드 등록 안내 `README.md:570`. **다만** 실제 배포본에서 환경변수가 주입되었는지 확인할 증거가 없어 "일부라도 동작하지 않으면 미충족" 조건을 입증할 수 없다. 추가로 `vercel.json:3` 의 `"destination": "/"` 는 Vercel 권장 표기(`/index.html`)와 다름 |
 
 #### 보너스 과제
 
@@ -401,7 +401,7 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
 #### 🔍 발견된 격차와 보완 제안
 
 1. **[치명] R8 — 배포 URL 이 저장소 어디에도 없다.**
-   무엇이 부족한가: 명세 0.2 "최종 산출물"은 *동작하는 URL + 코드 + README* 3종 세트를 요구하고, 제출 증거 체크리스트 첫 줄이 "배포된 서비스 URL"이다. `README.md:115-123` 에는 Vercel 배포 *방법*만 있고 실제 접속 주소가 없다.
+   무엇이 부족한가: 명세 0.2 "최종 산출물"은 *동작하는 URL + 코드 + README* 3종 세트를 요구하고, 제출 증거 체크리스트 첫 줄이 "배포된 서비스 URL"이다. `README.md:565-123` 에는 Vercel 배포 *방법*만 있고 실제 접속 주소가 없다.
    어떻게 고치면 되는가: Vercel/Netlify 에 실제 배포한 뒤 README 최상단에 `🔗 배포 URL: https://…` 와 `🔗 GitHub: https://github.com/ashofrondol/codyssey_B4-2` 두 줄을 추가하라. 배포 후 `/books/<실제 id>` 를 **주소창에 직접 입력하고 새로고침**해서 404 가 아닌지, 목록·등록·수정·삭제가 전부 도는지 확인한 스크린샷을 함께 남기면 R8-1·R8-2 의 로컬 검증 불가 상태가 해소된다.
 
 2. **[중요] R8-3 — 배포 환경 변수 주입 증거가 없다.**
@@ -412,7 +412,7 @@ React는 전 세계에서 가장 널리 사용되는 프론트엔드 UI 라이�
    B1 은 테마 토글이나 전역 토스트 알림을 `createContext` 로 빼는 것이 가장 작은 비용이고, B3 는 Supabase Auth 매직링크 + `<Route element={<RequireAuth/>}>` 중첩 가드로 `/login` 라우트를 채우면 된다(명세 해설대로 B1·B3 는 세트로 묶기 좋다).
 
 4. **[경미] README 의 자체 집계가 실제보다 후하다 (요구사항 판정 자체에는 영향 없음).**
-   `README.md:8` 은 catch-all `*` 을 포함해 "라우팅 7개"로, `README.md:25,132` 는 prop 을 받지 않는 `Navbar`·`Layout` 을 포함해 "재사용 UI 12개"로 센다. 명세 0.9 함정 1·2 의 셈법(404 제외, prop 수용분만)으로는 각각 6개·10개다. 둘 다 임계값(5개·8개)은 여유롭게 넘으므로 판정은 충족이지만, 구술 평가에서 "12개"라고 답하면 R3-2 정의를 되묻는 질문이 들어온다. 실제 셈법 기준으로 문구를 고쳐두는 편이 안전하다.
+   `README.md:458` 은 catch-all `*` 을 포함해 "라우팅 7개"로, `README.md:475,132` 는 prop 을 받지 않는 `Navbar`·`Layout` 을 포함해 "재사용 UI 12개"로 센다. 명세 0.9 함정 1·2 의 셈법(404 제외, prop 수용분만)으로는 각각 6개·10개다. 둘 다 임계값(5개·8개)은 여유롭게 넘으므로 판정은 충족이지만, 구술 평가에서 "12개"라고 답하면 R3-2 정의를 되묻는 질문이 들어온다. 실제 셈법 기준으로 문구를 고쳐두는 편이 안전하다.
 
 5. **[경미, 요구사항 외 — 학습 지도 G3 관련] `useBookDetail` 에 경쟁 상태(race condition) 방어가 없다.**
    `src/hooks/useBookDetail.js:27-29` 의 effect 에는 클린업이 없어, 상세 페이지를 빠르게 왔다갔다 하면 먼저 보낸 요청의 늦은 응답이 나중 상태를 덮어쓸 수 있다. 명세 0.8 표의 G3 항목이 정확히 이 질문("이전 요청의 응답이 나중에 도착해 화면을 덮어쓸 수 있는가")을 구술 문항으로 예고한다. `let alive = true` 플래그 또는 `AbortController` 를 추가하고 `return () => { alive = false }` 로 막아두면 답변까지 함께 준비된다. `useBooks.js:25-27` 도 동일.
