@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="460" viewBox="0 0 820 460" role="img" aria-labelledby="title desc">
+<title id="title">이벤트 → 상태 → 화면, 한 바퀴</title>
+<desc id="desc">사용자 이벤트가 setState 를 부르고, React 가 컴포넌트를 다시 렌더한 뒤 이전 결과와 비교해 바뀐 DOM 만 고치는 순환을 보여 준다. 오른쪽은 별 4번째 클릭 때 실제로 찍힌 순서(RatingStars.jsx:21 → BookForm.jsx:29 setRating(4) → BookForm 렌더 +32ms)와 화면 0/5 → 4/5 변화다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="820" height="460"/>
+
+<text class="th" x="24" y="34">이벤트 → 상태 → 화면, 한 바퀴</text>
+<text class="ts" x="24" y="56">우리 코드는 ①② 까지만 한다 · ③④⑤ 는 React 가 알아서 한다</text>
+
+<!-- 순환 5칸 -->
+<rect class="blue" x="24" y="84" width="152" height="64" rx="10"/>
+<text x="100" y="110" text-anchor="middle" class="tb c-blue">① 이벤트</text>
+<text x="100" y="132" text-anchor="middle" class="ts">클릭·입력</text>
+
+<rect class="purple" x="200" y="84" width="152" height="64" rx="10"/>
+<text x="276" y="110" text-anchor="middle" class="tb c-purple">② setState</text>
+<text x="276" y="132" text-anchor="middle" class="ts">상태 변경 예약</text>
+
+<rect class="box" x="376" y="84" width="152" height="64" rx="10"/>
+<text x="452" y="110" text-anchor="middle" class="tb">③ 다시 렌더</text>
+<text x="452" y="132" text-anchor="middle" class="ts">컴포넌트 함수 재호출</text>
+
+<rect class="box" x="376" y="220" width="152" height="64" rx="10"/>
+<text x="452" y="246" text-anchor="middle" class="tb">④ 비교(재조정)</text>
+<text x="452" y="268" text-anchor="middle" class="ts">이전 나무 vs 새 나무</text>
+
+<rect class="yellow" x="24" y="220" width="152" height="64" rx="10"/>
+<text x="100" y="246" text-anchor="middle" class="tb">⑤ DOM 반영</text>
+<text x="100" y="268" text-anchor="middle" class="ts">바뀐 곳만</text>
+
+<line class="ln" x1="176" y1="116" x2="196" y2="116" marker-end="url(#arrow)"/>
+<line class="ln" x1="352" y1="116" x2="372" y2="116" marker-end="url(#arrow)"/>
+<line class="ln" x1="452" y1="148" x2="452" y2="216" marker-end="url(#arrow)"/>
+<line class="ln" x1="376" y1="252" x2="180" y2="252" marker-end="url(#arrow)"/>
+<line class="ln ln-blue" x1="100" y1="220" x2="100" y2="152" marker-end="url(#arrow-blue)"/>
+
+<text x="276" y="180" text-anchor="middle" class="ts">입력이 올 때마다</text>
+<text x="276" y="199" text-anchor="middle" class="ts">이 바퀴가 한 번 돈다</text>
+
+<text class="ts" x="24" y="312">파랑 = 이벤트 · 보라 = 상태(state) · 노랑 = 실제로 바뀐 화면</text>
+
+<!-- 오른쪽: 실측 -->
+<text class="tb" x="552" y="80">실측: 별 4번째 클릭</text>
+
+<rect class="blue" x="552" y="94" width="244" height="46" rx="8"/>
+<text class="mono" x="564" y="113">① RatingStars.jsx:21</text>
+<text class="mono" x="586" y="132">onClick → handle(4)</text>
+
+<rect class="purple" x="552" y="148" width="244" height="46" rx="8"/>
+<text class="mono" x="564" y="167">② BookForm.jsx:29</text>
+<text class="mono" x="586" y="186">setRating(4)</text>
+
+<rect class="box" x="552" y="202" width="244" height="46" rx="8"/>
+<text class="mono" x="564" y="221">③ [render] BookForm</text>
+<text class="mono" x="586" y="240">title="코" rating=4</text>
+<text class="ts" x="784" y="221" text-anchor="end">+32ms</text>
+
+<rect class="box" x="552" y="258" width="104" height="50" rx="8"/>
+<text class="ts" x="604" y="276" text-anchor="middle">전</text>
+<text class="mono" x="604" y="297" text-anchor="middle">별 0개 · 0/5</text>
+<line class="ln" x1="660" y1="283" x2="688" y2="283" marker-end="url(#arrow)"/>
+<rect class="yellow" x="692" y="258" width="104" height="50" rx="8"/>
+<text class="ts" x="744" y="276" text-anchor="middle">후</text>
+<text class="mono tb" x="744" y="297" text-anchor="middle">별 4개 · 4/5</text>
+
+<!-- 아래 표 -->
+<text class="tb" x="24" y="340">이 앱에서 같은 바퀴가 도는 곳</text>
+<rect class="box" x="24" y="350" width="772" height="84" rx="8"/>
+<line class="ln" x1="24" y1="378" x2="796" y2="378"/>
+<line class="ln" x1="24" y1="406" x2="796" y2="406"/>
+<line class="ln" x1="400" y1="350" x2="400" y2="434"/>
+<text class="ts" x="40" y="369">검색어 입력 → 목록 필터</text>
+<text class="mono" x="416" y="369">BooksPage</text>
+<text class="ts" x="40" y="397">별 클릭 → 별 채움</text>
+<text class="mono" x="416" y="397">BookForm → RatingStars</text>
+<text class="ts" x="40" y="425">제출 → '처리 중…'</text>
+<text class="mono" x="416" y="425">NewBookPage → Button</text>
+</svg>

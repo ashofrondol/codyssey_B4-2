@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="480" viewBox="0 0 860 480" role="img" aria-labelledby="title desc">
+<title id="title">주소 → 화면: React Router 가 고르는 법</title>
+<desc id="desc">주소 /books/2222…/edit, /books/new, /nope 가 라우트 규칙 7개 중 점수가 가장 높은 규칙에 걸려 EditBookPage, NewBookPage, NotFoundPage 가 된다. /books/new 는 /books/:id(17점)에도 맞지만 /books/new(24점)가 이긴다. 모든 페이지는 Layout 라우트 안의 Outlet 자리에 그려진다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="860" height="480"/>
+
+<text class="th" x="24" y="34">주소 → 화면: React Router 가 고르는 법</text>
+<text class="ts" x="24" y="56">초록 = 이긴 규칙과 그 결과 · 회색 점선 = 맞기는 하지만 점수에서 진 규칙</text>
+
+<text class="tb" x="24" y="86">주소창에 친 주소</text>
+<text class="tb" x="240" y="86">규칙 (점수 높은 순)</text>
+<text class="tb" x="572" y="86">그려지는 페이지</text>
+<text class="ts" x="240" y="106">점수가 높은 규칙이 이긴다 (등록 순서 무관)</text>
+
+<!-- 입력 -->
+<rect class="blue" x="24" y="100" width="168" height="40" rx="8"/>
+<text class="mono c-blue" x="108" y="125" text-anchor="middle">/books/2222…/edit</text>
+<rect class="blue" x="24" y="176" width="168" height="40" rx="8"/>
+<text class="mono c-blue" x="108" y="201" text-anchor="middle">/books/new</text>
+<text class="ts c-muted" x="24" y="238">id='new' 로도 맞지만</text>
+<text class="ts c-muted" x="24" y="256">17 &lt; 24 라 탈락</text>
+<rect class="blue" x="24" y="343" width="168" height="40" rx="8"/>
+<text class="mono c-blue" x="108" y="368" text-anchor="middle">/nope</text>
+
+<!-- 규칙표 -->
+<rect class="box" x="240" y="116" width="276" height="266"/>
+<rect class="green" x="240" y="116" width="276" height="38"/>
+<rect class="green" x="240" y="154" width="276" height="38"/>
+<rect class="green" x="240" y="344" width="276" height="38"/>
+<line class="ln" x1="240" y1="230" x2="516" y2="230"/>
+<line class="ln" x1="240" y1="268" x2="516" y2="268"/>
+<line class="ln" x1="240" y1="306" x2="516" y2="306"/>
+
+<text class="mono" x="254" y="140">/books/:id/edit</text><text class="tb c-green" x="502" y="140" text-anchor="end">28점</text>
+<text class="mono" x="254" y="178">/books/new</text><text class="tb c-green" x="502" y="178" text-anchor="end">24점</text>
+<text class="mono" x="254" y="216">/books/:id</text><text class="tb c-muted" x="502" y="216" text-anchor="end">17점</text>
+<text class="mono" x="254" y="254">/books</text><text class="tb c-muted" x="502" y="254" text-anchor="end">13점</text>
+<text class="mono" x="254" y="292">/about</text><text class="tb c-muted" x="502" y="292" text-anchor="end">13점</text>
+<text class="mono" x="254" y="330">/</text><text class="tb c-muted" x="502" y="330" text-anchor="end">4점</text>
+<text class="mono" x="254" y="368">*</text><text class="ts" x="272" y="368">(어떤 주소든 맞음)</text><text class="tb c-green" x="502" y="368" text-anchor="end">1점</text>
+
+<!-- 결과 -->
+<rect class="green" x="572" y="100" width="264" height="64" rx="8"/>
+<text class="tb c-green" x="704" y="125" text-anchor="middle">EditBookPage</text>
+<text class="mono" x="704" y="149" text-anchor="middle">useParams() → { id: '2222…' }</text>
+<rect class="green" x="572" y="184" width="264" height="40" rx="8"/>
+<text class="tb c-green" x="704" y="209" text-anchor="middle">NewBookPage</text>
+<rect class="green" x="572" y="343" width="264" height="40" rx="8"/>
+<text class="tb c-green" x="704" y="368" text-anchor="middle">NotFoundPage</text>
+
+<!-- 연결선 -->
+<line class="ln ln-green" x1="192" y1="120" x2="236" y2="135" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="192" y1="192" x2="236" y2="173" marker-end="url(#arrow-green)"/>
+<line class="ln dash" x1="192" y1="200" x2="236" y2="211" marker-end="url(#arrow)"/>
+<line class="ln ln-green" x1="192" y1="363" x2="236" y2="363" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="516" y1="135" x2="568" y2="132" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="516" y1="173" x2="568" y2="204" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="516" y1="363" x2="568" y2="363" marker-end="url(#arrow-green)"/>
+
+<!-- 레이아웃 라우트 -->
+<rect class="zone" x="24" y="408" width="812" height="48" rx="10"/>
+<text class="mono" x="40" y="437">&lt;Route element={&lt;Layout /&gt;}&gt;</text>
+<text class="ts" x="268" y="437">모든 페이지의 틀 · Navbar 는 늘 보이고, 고른 페이지는 <tspan class="mono">&lt;Outlet /&gt;</tspan> 자리에</text>
+</svg>

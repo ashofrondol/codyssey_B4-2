@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="500" viewBox="0 0 860 500" role="img" aria-labelledby="title desc">
+<title id="title">환경변수는 빌드할 때 글자로 박힌다</title>
+<desc id="desc">.env 나 Vercel 대시보드의 값은 vite build 순간 import.meta.env.VITE_SUPABASE_URL 자리에 실제 글자로 치환되어 번들 JS 에 들어간다. 값이 있으면 앱이 정상 동작하고, 값이 없으면 빌드는 성공하지만 D_("","") 로 만든 클라이언트가 supabaseUrl is required. 오류를 던져 모든 경로가 백지가 된다. 번들은 누구나 받으므로 anon key 는 공개 전제이고 보호는 RLS 가 맡는다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="860" height="500"/>
+
+<text class="th" x="24" y="36">환경변수는 빌드할 때 글자로 박힌다</text>
+<text class="ts" x="24" y="58">왼→오 · 오른쪽 코드는 실제 빌드 결과(번들 JS)에서 잘라 온 것 (값은 검증용 모의 서버 주소·키)</text>
+
+<!-- 왼쪽: 값이 들어 있는 곳 -->
+<rect class="box" x="24" y="112" width="204" height="84" rx="10"/>
+<text x="126" y="140" text-anchor="middle" class="mono tb">.env (내 PC)</text>
+<text x="126" y="162" text-anchor="middle" class="ts">git 에 안 올라감</text>
+<text x="126" y="182" text-anchor="middle" class="ts">(.gitignore)</text>
+
+<rect class="box" x="24" y="220" width="204" height="84" rx="10"/>
+<text x="126" y="246" text-anchor="middle" class="tb">Vercel 대시보드</text>
+<text x="126" y="268" text-anchor="middle" class="mono">Environment Variables</text>
+<text x="126" y="290" text-anchor="middle" class="ts">배포 빌드용</text>
+
+<!-- 가운데: vite build -->
+<rect class="blue" x="260" y="112" width="196" height="192" rx="10"/>
+<text x="358" y="142" text-anchor="middle" class="tb c-blue">vite build</text>
+<text x="358" y="172" text-anchor="middle" class="mono">import.meta.env.</text>
+<text x="358" y="192" text-anchor="middle" class="mono">VITE_SUPABASE_URL</text>
+<text x="358" y="222" text-anchor="middle" class="ts">빌드 순간</text>
+<text x="358" y="242" text-anchor="middle" class="ts tb">실제 글자로 치환</text>
+<text x="358" y="282" text-anchor="middle" class="ts">빌드는 둘 다 성공(exit 0)</text>
+
+<line class="ln ln-blue" x1="228" y1="154" x2="256" y2="154" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="228" y1="262" x2="256" y2="262" marker-end="url(#arrow-blue)"/>
+
+<!-- 오른쪽 위: 값 있음 -->
+<rect class="green" x="500" y="80" width="336" height="104" rx="10"/>
+<text x="516" y="104" class="tb c-green">① 값 있음 → 번들에 값이 박힘</text>
+<text x="516" y="128" class="mono">const M_="http://127.0.0.1:54871",</text>
+<text x="516" y="148" class="mono">z_="mock-anon-key",Os=D_(M_,z_)</text>
+<text x="516" y="172" class="ts">→ 앱 정상 동작</text>
+
+<!-- 오른쪽 아래: 값 없음 -->
+<rect class="red" x="500" y="208" width="336" height="88" rx="10"/>
+<text x="516" y="232" class="tb c-red">② 값 없음 → 빈 글자가 박힘</text>
+<text x="516" y="256" class="mono">console.warn("[supabase] …");</text>
+<text x="516" y="278" class="mono">const Os=D_("","")</text>
+
+<path class="ln ln-blue" d="M456,150 H478 V132 H496" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-red" x1="456" y1="252" x2="496" y2="252" marker-end="url(#arrow-red)"/>
+
+<line class="ln ln-red" x1="668" y1="296" x2="668" y2="320" marker-end="url(#arrow-red)"/>
+<text x="678" y="313" class="ts">브라우저에서 열면</text>
+
+<rect class="red" x="500" y="324" width="336" height="80" rx="10"/>
+<text x="516" y="347" class="mono c-red tb">supabaseUrl is required.</text>
+<text x="516" y="369" class="mono">root.innerHTML.length = 0</text>
+<text x="516" y="391" class="ts">/ · /about · /books 모두 백지</text>
+
+<!-- 하단 띠 -->
+<rect class="box" x="24" y="428" width="812" height="48" rx="10"/>
+<text x="430" y="457" text-anchor="middle">번들은 누구나 받는 파일 → anon key 는 공개 전제, 보호는 RLS 몫 · 값을 바꾸면 다시 빌드해야 반영</text>
+
+<text x="24" y="352" class="ts">근거: §3.11 의 번들 grep · 크롬 실측 원문</text>
+<text x="24" y="374" class="ts">번들 속 이름은 빌드가 짧게 줄인 것:</text>
+<text x="24" y="394" class="mono c-muted">D_ = createClient · Os = supabase</text>
+</svg>

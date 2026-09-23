@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="500" viewBox="0 0 820 500" role="img" aria-labelledby="title desc">
+<title id="title">import 방향 규칙 — scripts/check.mjs 가 검사하는 것</title>
+<desc id="desc">pages 는 components, hooks, lib/books.js 를 import 할 수 있고, components 와 hooks 는 lib/books.js 를, lib/books.js 는 lib/supabase.js 를 import 한다(lib 밖에서 supabase.js 를 부르면 실패). components 나 hooks 가 pages 를 import 하면 검사가 실패한다(빨간 점선). routes.js 와 App.jsx 는 방향 규칙 밖의 공용 파일이다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="820" height="500"/>
+<text class="th" x="24" y="34">import 방향 규칙 — 검사가 막는 것</text>
+<text class="ts" x="24" y="56">화살표 끝 = 가져다 쓰는 파일 · 위층은 아래층을 쓸 수 있고, 거꾸로는 안 된다</text>
+
+<!-- pages -->
+<rect class="blue" x="250" y="84" width="240" height="60" rx="10"/>
+<text x="370" y="108" text-anchor="middle" class="tb c-blue">pages 7개</text>
+<text x="370" y="130" text-anchor="middle" class="mono">NewBookPage.jsx …</text>
+
+<!-- 공용 -->
+<rect class="box" x="580" y="84" width="216" height="60" rx="10"/>
+<text x="688" y="108" text-anchor="middle" class="mono tb">routes.js · App.jsx</text>
+<text x="688" y="130" text-anchor="middle" class="ts">방향 규칙 밖 · 누구나 읽음</text>
+
+<!-- components / hooks -->
+<rect class="box" x="40" y="210" width="260" height="60" rx="10"/>
+<text x="170" y="234" text-anchor="middle" class="tb">components 13개</text>
+<text x="170" y="256" text-anchor="middle" class="mono">Button · BookForm …</text>
+
+<rect class="box" x="440" y="210" width="260" height="60" rx="10"/>
+<text x="570" y="234" text-anchor="middle" class="tb">hooks 2개</text>
+<text x="570" y="256" text-anchor="middle" class="mono">useBooks · useBookDetail</text>
+
+<!-- lib -->
+<rect class="zone" x="120" y="318" width="620" height="114" rx="12"/>
+<text x="724" y="338" text-anchor="end" class="ts">lib — 바깥 세상(Supabase)과 규칙</text>
+<rect class="purple" x="280" y="350" width="180" height="56" rx="10"/>
+<text x="370" y="373" text-anchor="middle" class="mono tb c-purple">lib/books.js</text>
+<text x="370" y="394" text-anchor="middle" class="ts">CRUD 5개 + 검증 규칙</text>
+<rect class="box" x="524" y="350" width="196" height="56" rx="10"/>
+<text x="622" y="373" text-anchor="middle" class="mono tb">lib/supabase.js</text>
+<text x="622" y="394" text-anchor="middle" class="ts">lib 밖에서 import 금지</text>
+<text x="136" y="424" class="ts c-red">✗ lib 는 위층을 import 못 함</text>
+
+<!-- 허용 (초록) -->
+<line class="ln ln-green" x1="300" y1="144" x2="222" y2="205" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="440" y1="144" x2="518" y2="205" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="370" y1="144" x2="370" y2="345" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="200" y1="270" x2="298" y2="346" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="540" y1="270" x2="442" y2="346" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="460" y1="378" x2="519" y2="378" marker-end="url(#arrow-green)"/>
+
+<!-- 금지 (빨강 점선) -->
+<line class="ln ln-red dash" x1="100" y1="206" x2="245" y2="116" marker-end="url(#arrow-red)"/>
+<rect class="bg" x="92" y="146" width="92" height="26"/>
+<text x="138" y="164" text-anchor="middle" class="ts c-red">✗ 금지</text>
+<line class="ln ln-red dash" x1="640" y1="206" x2="495" y2="116" marker-end="url(#arrow-red)"/>
+<rect class="bg" x="556" y="146" width="92" height="26"/>
+<text x="602" y="164" text-anchor="middle" class="ts c-red">✗ 금지</text>
+
+<!-- 범례 -->
+<text x="24" y="462" class="ts">초록 = import 해도 됨 · 빨간 점선 ✗ = npm run lint 가 종료 코드 1 로 실패 (hooks → components 도 금지)</text>
+<text x="24" y="484" class="ts">금지표 FORBIDDEN (check.mjs:103-109): lib ✗ 위 세 층 · hooks ✗ components·pages · components ✗ pages</text>
+</svg>

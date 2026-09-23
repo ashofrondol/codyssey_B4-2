@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="440" viewBox="0 0 860 440" role="img" aria-labelledby="title desc">
+<title id="title">/books 첫 진입 타임라인 — effect 는 그린 뒤에 돈다</title>
+<desc id="desc">/books 에 처음 들어가면 +53ms 에 스피너를 그리는 렌더가 먼저 일어나고, +58ms 에 effect 가 fetchAll() 로 GET 요청을 보낸다. 600ms 지연된 응답이 +662ms 에 오면 setItems 와 setLoading(false) 가 렌더 한 번(+663ms)으로 묶여 목록 3권이 그려진다. 아래는 useCallback 을 뺐을 때 3초 동안 GET 수백~수천 회(측정마다 다름) 폭주와, 개발 모드 StrictMode 의 GET 2회(빌드본 1회) 실측이다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="860" height="440"/>
+
+<text class="th" x="24" y="34">/books 첫 진입 타임라인 — effect 는 그린 뒤에 돈다</text>
+<text class="ts" x="24" y="54">축 위 = 화면 그리기(렌더) · 축 아래 = 데이터 가져오기(effect·요청) · 계측 복사본 실측, 서버 응답은 일부러 600ms 늦춤</text>
+
+<!-- 위: 렌더 -->
+<rect class="box" x="24" y="68" width="220" height="68" rx="8"/>
+<text class="tb" x="38" y="89">+53ms  렌더 ①</text>
+<text class="mono" x="38" y="110">loading=true · items=0</text>
+<text class="ts" x="38" y="129">스피너 표시</text>
+
+<rect class="green" x="576" y="68" width="260" height="68" rx="8"/>
+<text class="tb c-green" x="590" y="89">+663ms  렌더 ②</text>
+<text class="mono" x="590" y="110">loading=false · items=3</text>
+<text class="ts" x="590" y="129">목록 3권 표시</text>
+
+<!-- 축 -->
+<line class="ln" x1="64" y1="180" x2="828" y2="180"/>
+<line class="ln" x1="64" y1="175" x2="64" y2="185"/><text class="ts" x="64" y="166" text-anchor="middle">0</text>
+<line class="ln" x1="172" y1="175" x2="172" y2="185"/><text class="ts" x="172" y="166" text-anchor="middle">100</text>
+<line class="ln" x1="280" y1="175" x2="280" y2="185"/><text class="ts" x="280" y="166" text-anchor="middle">200</text>
+<line class="ln" x1="388" y1="175" x2="388" y2="185"/><text class="ts" x="388" y="166" text-anchor="middle">300</text>
+<line class="ln" x1="496" y1="175" x2="496" y2="185"/><text class="ts" x="496" y="166" text-anchor="middle">400</text>
+<line class="ln" x1="604" y1="175" x2="604" y2="185"/><text class="ts" x="604" y="166" text-anchor="middle">500</text>
+<line class="ln" x1="712" y1="175" x2="712" y2="185"/><text class="ts" x="712" y="166" text-anchor="middle">600</text>
+<line class="ln" x1="820" y1="175" x2="820" y2="185"/><text class="ts" x="828" y="166" text-anchor="end">700ms</text>
+<line class="ln" x1="121" y1="136" x2="121" y2="175"/>
+<circle class="box" cx="121" cy="180" r="4.5"/>
+<line class="ln ln-green" x1="780" y1="136" x2="780" y2="175"/>
+<circle class="green" cx="780" cy="180" r="4.5"/>
+
+<!-- 대기 막대 -->
+<rect class="box" x="127" y="192" width="652" height="26" rx="4"/>
+<text class="ts" x="453" y="210" text-anchor="middle">서버 응답 대기 (600ms 지연)</text>
+
+<!-- 아래: effect, 응답 -->
+<rect class="blue" x="24" y="252" width="220" height="68" rx="8"/>
+<text class="tb c-blue" x="38" y="273">+58ms  effect 실행</text>
+<text class="mono" x="38" y="294">fetchAll()</text>
+<text class="ts" x="38" y="313">화면을 그린 다음에 실행</text>
+<line class="ln ln-blue" x1="140" y1="252" x2="140" y2="222" marker-end="url(#arrow-blue)"/>
+<text class="mono c-blue" x="150" y="241">GET /rest/v1/books</text>
+
+<rect class="green" x="576" y="252" width="260" height="68" rx="8"/>
+<text class="tb c-green" x="590" y="273">+662ms  응답</text>
+<text class="mono" x="590" y="294">setItems(3) + setLoading(false)</text>
+<text class="ts" x="590" y="313">두 변경이 한 번에 (렌더 1번)</text>
+<line class="ln ln-green" x1="770" y1="218" x2="770" y2="248" marker-end="url(#arrow-green)"/>
+
+<!-- 아래 두 상자 -->
+<rect class="red" x="24" y="340" width="394" height="76" rx="8"/>
+<text class="tb c-red" x="38" y="362"><tspan class="mono">useCallback</tspan> 을 빼면</text>
+<text class="mono" x="38" y="384">3초 동안 GET 수백~수천 회 (원본 1회)</text>
+<text class="ts" x="38" y="405">렌더마다 새 함수 → effect 재실행 → 무한 반복</text>
+
+<rect class="box" x="442" y="340" width="394" height="76" rx="8"/>
+<text class="tb" x="456" y="362">개발 모드 StrictMode</text>
+<text class="mono" x="456" y="384">GET 2회 (빌드본 1회)</text>
+<text class="ts" x="456" y="405">일부러 두 번 실행해 정리 누락을 드러냄</text>
+</svg>

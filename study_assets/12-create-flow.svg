@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="836" viewBox="0 0 880 836" role="img" aria-labelledby="title desc">
+<title id="title">'등록' 버튼 하나가 지나가는 길</title>
+<desc id="desc">새 기록 페이지에서 '등록'을 누르면 BookForm 이 기본 전송을 막고 검사한 뒤 NewBookPage 의 handleSubmit 을 부르고, NewBookPage 는 submitting 을 켠 다음 createBook 으로 lib/books.js 를 거쳐 Supabase 에 POST 한다. 201 응답으로 받은 id 로 상세 주소로 이동하면 BookDetailPage 가 스피너를 그린 뒤 useBookDetail 이 lib/books.js 의 getBook 으로 다시 GET 해 상세 화면을 그린다(클릭 뒤 +1247ms, 모의 서버 600ms 지연). 실패하면 오류가 throw 되어 catch 에서 setSubmitError 가 불리고 폼 위에 경고 배너가 뜬다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="880" height="836"/>
+
+<text class="th" x="24" y="30">'등록' 버튼 하나가 지나가는 길</text>
+<text class="ts" x="856" y="30" text-anchor="end">위에서 아래로 시간이 흐른다 · 모의 서버 응답 600ms 지연</text>
+
+<!-- 생명선 -->
+<line class="ln" style="stroke-width:1;opacity:.5" x1="86" y1="90" x2="86" y2="132"/>
+<line class="ln" style="stroke-width:1;opacity:.5" x1="228" y1="90" x2="228" y2="556"/>
+<line class="ln" style="stroke-width:1;opacity:.5" x1="369" y1="90" x2="369" y2="536"/>
+<line class="ln" style="stroke-width:1;opacity:.5" x1="511" y1="90" x2="511" y2="760"/>
+<line class="ln" style="stroke-width:1;opacity:.5" x1="652" y1="90" x2="652" y2="724"/>
+<line class="ln" style="stroke-width:1;opacity:.5" x1="794" y1="90" x2="794" y2="776"/>
+
+<!-- 머리 상자 -->
+<rect class="box" x="24" y="44" width="124" height="46" rx="8"/>
+<text x="86" y="65" text-anchor="middle"><tspan class="tb">사용자</tspan></text>
+<text x="86" y="83" text-anchor="middle"><tspan class="ts">'등록' 클릭</tspan></text>
+<rect class="box" x="166" y="44" width="124" height="46" rx="8"/>
+<text x="228" y="65" text-anchor="middle"><tspan class="mono tb">BookForm</tspan></text>
+<text x="228" y="83" text-anchor="middle"><tspan class="ts">입력 폼</tspan></text>
+<rect class="box" x="307" y="44" width="124" height="46" rx="8"/>
+<text x="369" y="65" text-anchor="middle"><tspan class="mono tb">NewBookPage</tspan></text>
+<text x="369" y="83" text-anchor="middle"><tspan class="ts">새 기록 페이지</tspan></text>
+<rect class="box" x="449" y="44" width="124" height="46" rx="8"/>
+<text x="511" y="65" text-anchor="middle"><tspan class="mono tb">lib/books.js</tspan></text>
+<text x="511" y="83" text-anchor="middle"><tspan class="ts">데이터 함수</tspan></text>
+<rect class="box" x="590" y="44" width="124" height="46" rx="8"/>
+<text x="652" y="65" text-anchor="middle"><tspan class="tb">Supabase</tspan></text>
+<text x="652" y="83" text-anchor="middle"><tspan class="ts">DB 서버</tspan></text>
+<rect class="box" x="732" y="44" width="124" height="46" rx="8"/>
+<text x="794" y="65" text-anchor="middle"><tspan class="mono tb">BookDetailPage</tspan></text>
+<text x="794" y="83" text-anchor="middle"><tspan class="ts">상세 페이지</tspan></text>
+
+<!-- 화살표 -->
+<line class="ln ln-blue" x1="86" y1="124" x2="224" y2="124" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="228" y1="218" x2="365" y2="218" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="369" y1="314" x2="507" y2="314" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="511" y1="354" x2="648" y2="354" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-green" x1="652" y1="410" x2="515" y2="410" marker-end="url(#arrow-green)"/>
+<line class="ln ln-red dash" x1="652" y1="426" x2="515" y2="426" marker-end="url(#arrow-red)"/>
+<line class="ln ln-green" x1="511" y1="468" x2="373" y2="468" marker-end="url(#arrow-green)"/>
+<line class="ln ln-red dash" x1="511" y1="484" x2="373" y2="484" marker-end="url(#arrow-red)"/>
+<line class="ln ln-red dash" x1="369" y1="528" x2="232" y2="528" marker-end="url(#arrow-red)"/>
+<line class="ln ln-blue" x1="369" y1="528" x2="790" y2="528" marker-end="url(#arrow-blue)"/>
+<circle class="ah" cx="369" cy="528" r="4.5"/>
+<line class="ln ln-blue" x1="794" y1="640" x2="515" y2="640" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="511" y1="680" x2="648" y2="680" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-green" x1="652" y1="720" x2="515" y2="720" marker-end="url(#arrow-green)"/>
+<line class="ln ln-green" x1="511" y1="760" x2="790" y2="760" marker-end="url(#arrow-green)"/>
+
+<!-- 라벨 배경 -->
+<rect class="bg" x="119" y="92" width="77" height="28"/>
+<rect class="bg" x="172" y="186" width="252" height="28"/>
+<rect class="bg" x="359" y="282" width="161" height="28"/>
+<rect class="bg" x="466" y="322" width="231" height="28"/>
+<rect class="bg" x="470" y="359" width="223" height="26"/>
+<rect class="bg" x="462" y="378" width="238" height="28"/>
+<rect class="bg" x="398" y="436" width="84" height="28"/>
+<rect class="bg" x="153" y="496" width="212" height="28"/>
+<rect class="bg" x="200" y="533" width="165" height="26"/>
+<rect class="bg" x="373" y="496" width="424" height="28"/>
+<rect class="bg" x="373" y="533" width="331" height="26"/>
+<rect class="bg" x="540" y="610" width="232" height="28"/>
+<rect class="bg" x="516" y="650" width="130" height="28"/>
+<rect class="bg" x="548" y="690" width="68" height="28"/>
+<rect class="bg" x="586" y="730" width="134" height="28"/>
+
+<!-- 상태 상자 -->
+<rect class="box" x="63" y="136" width="296" height="48" rx="8"/>
+<text x="211.2" y="157" text-anchor="middle"><tspan class="tb">② </tspan><tspan class="mono">preventDefault · validateBook → {}</tspan></text>
+<text x="211.2" y="176" text-anchor="middle"><tspan class="ts">BookForm.jsx:31-36 · {} = 틀린 칸 없음</tspan></text>
+<rect class="box" x="276" y="232" width="186" height="48" rx="8"/>
+<text x="369.0" y="253" text-anchor="middle"><tspan class="tb">④ </tspan><tspan class="mono">setSubmitting(true)</tspan></text>
+<text x="369.0" y="272" text-anchor="middle"><tspan class="ts">버튼 '처리 중…' (+32ms)</tspan></text>
+<rect class="red" x="147" y="556" width="161" height="48" rx="8"/>
+<text x="228.0" y="577" text-anchor="middle"><tspan>폼 위 ⚠️ 배너</tspan></text>
+<text x="228.0" y="596" text-anchor="middle"><tspan class="ts">BookForm.jsx:44-48</tspan></text>
+<rect class="box" x="651" y="556" width="205" height="48" rx="8"/>
+<text x="753.6" y="577" text-anchor="middle"><tspan class="tb">⑩ </tspan><tspan class="mono">loading=true</tspan><tspan> → 스피너</tspan></text>
+<text x="753.6" y="596" text-anchor="middle"><tspan class="ts">useBookDetail.js:24-26</tspan></text>
+<rect class="green" x="677" y="780" width="179" height="36" rx="8"/>
+<text x="766.3" y="803" text-anchor="middle"><tspan class="tb c-green">상세 화면 (+1247ms)</tspan></text>
+
+<!-- 라벨 -->
+<text x="157.0" y="113" text-anchor="middle"><tspan class="tb">① </tspan><tspan class="mono">submit</tspan></text>
+<text x="298.5" y="207" text-anchor="middle"><tspan class="tb">③ </tspan><tspan class="mono">onSubmit(normalizeBook(values))</tspan></text>
+<text x="218" y="227" text-anchor="end"><tspan class="ts">BookForm.jsx:37</tspan></text>
+<text x="440.0" y="303" text-anchor="middle"><tspan class="tb">⑤ </tspan><tspan class="mono">createBook(values)</tspan></text>
+<text x="359" y="323" text-anchor="end"><tspan class="ts">NewBookPage.jsx:16</tspan></text>
+<text x="581.5" y="343" text-anchor="middle"><tspan class="tb">⑥ </tspan><tspan class="mono">POST /rest/v1/books?select=*</tspan></text>
+<text x="581.5" y="377" text-anchor="middle"><tspan class="ts">Prefer: return=representation</tspan></text>
+<text x="581.5" y="399" text-anchor="middle"><tspan class="tb">⑦ </tspan><tspan class="mono">201 { id: '…', created_at … }</tspan></text>
+<text x="662" y="431" text-anchor="start"><tspan class="ts c-red">실패하면 </tspan><tspan class="mono c-red">error</tspan></text>
+<text x="440.0" y="457" text-anchor="middle"><tspan class="tb">⑧ </tspan><tspan class="mono">created</tspan></text>
+<text x="521" y="489" text-anchor="start"><tspan class="mono c-red">throw Error</tspan></text>
+<text x="359" y="517" text-anchor="end"><tspan class="c-red">실패: </tspan><tspan class="mono c-red">catch → setSubmitError</tspan></text>
+<text x="359" y="551" text-anchor="end"><tspan class="ts">NewBookPage.jsx:18-21</tspan></text>
+<text x="379" y="517" text-anchor="start"><tspan class="tb">⑨ 성공: </tspan><tspan class="mono">navigate(bookPath(created.id), { replace: true })</tspan></text>
+<text x="379" y="551" text-anchor="start"><tspan class="ts">NewBookPage.jsx:17 · 상세 주소로 이동 (+640ms)</tspan></text>
+<text x="656" y="631" text-anchor="middle"><tspan class="mono">useBookDetail → getBook(id)</tspan></text>
+<text x="581" y="671" text-anchor="middle"><tspan class="mono">GET ?id=eq.&lt;id&gt;</tspan></text>
+<text x="582" y="711" text-anchor="middle"><tspan class="tb">⑪ </tspan><tspan class="mono">200</tspan></text>
+<text x="653" y="751" text-anchor="middle"><tspan class="mono">item → setItem</tspan></text>
+
+<!-- 범례 -->
+<text x="24" y="648" text-anchor="start"><tspan class="ts">파랑 = 호출·요청 · 초록 = 결과·응답 · 빨간 점선 = 실패했을 때</tspan></text>
+<text x="24" y="668" text-anchor="start"><tspan class="ts">회색 상자 = 그 컴포넌트 안의 상태 변경 · (+ms) = 클릭부터 잰 시각</tspan></text>
+</svg>

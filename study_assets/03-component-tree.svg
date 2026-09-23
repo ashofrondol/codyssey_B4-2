@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="604" viewBox="0 0 860 604" role="img" aria-labelledby="title desc">
+<title id="title">/books/new 화면의 컴포넌트 나무 — props 는 아래로, 알림은 위로</title>
+<desc id="desc">App 아래 Layout 이 Navbar 와 NewBookPage 를 품고, NewBookPage 는 제출 상태(submitting, submitError)를, BookForm 은 입력값 상태(values, errors, touched)를 가진다. 부모는 props 로 값과 함수를 내려 주고(파란), 자식은 받은 함수 onChange·onSubmit 을 불러 부모에게 알린다(초록). 별 4개를 누르면 RatingStars 가 onChange(4) 를 부르고 BookForm 의 setRating 이 values.rating 을 4로 바꾼다.</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="860" height="604"/>
+<text class="th" x="24" y="34">/books/new 화면의 컴포넌트 나무 — props 는 아래로, 알림은 위로</text>
+<text class="ts" x="24" y="56">별 4개를 누른 순간의 모습 · 취소 버튼 등 일부 생략</text>
+<rect class="box" x="370" y="76" width="120" height="34" rx="8"/>
+<text x="430" y="98" text-anchor="middle" class="tb">App</text>
+<line class="ln" x1="430" y1="110" x2="430" y2="134"/>
+<rect class="box" x="370" y="134" width="120" height="34" rx="8"/>
+<text x="430" y="156" text-anchor="middle" class="tb">Layout</text>
+<path class="ln" d="M430,168 V182 H220 V196"/>
+<line class="ln" x1="430" y1="182" x2="430" y2="196"/>
+<rect class="box" x="150" y="196" width="140" height="50" rx="8"/>
+<text x="220" y="217" text-anchor="middle" class="tb">Navbar</text>
+<text x="220" y="237" text-anchor="middle" class="ts">props 없음</text>
+<rect class="box" x="350" y="196" width="160" height="50" rx="8"/>
+<text x="430" y="217" text-anchor="middle" class="tb">NewBookPage</text>
+<text x="430" y="237" text-anchor="middle" class="mono">/books/new</text>
+<line class="ln ln-purple" x1="510" y1="221" x2="540" y2="221"/>
+<rect class="purple" x="540" y="196" width="276" height="50" rx="8"/>
+<text x="678" y="217" text-anchor="middle" class="tb c-purple">state</text>
+<text x="678" y="237" text-anchor="middle" class="mono">submitting=false · submitError=null</text>
+<line class="ln ln-blue" x1="410" y1="246" x2="410" y2="336" marker-end="url(#arrow-blue)"/>
+<text x="400" y="284" text-anchor="end" class="mono c-blue">submitLabel="등록" · submitting</text>
+<text x="400" y="303" text-anchor="end" class="mono c-blue">· submitError · onSubmit</text>
+<line class="ln ln-green" x1="450" y1="340" x2="450" y2="250" marker-end="url(#arrow-green)"/>
+<text x="460" y="284" class="mono c-green">onSubmit(normalizeBook(values))</text>
+<text x="460" y="303" class="ts c-green">등록 버튼을 누르면 부모에게 알림</text>
+<rect class="box" x="32" y="340" width="796" height="44" rx="8"/>
+<text x="48" y="367" class="ts">폼 한 장 (입력칸을 묶음)</text>
+<text x="430" y="367" text-anchor="middle" class="tb">BookForm</text>
+<rect class="purple" x="584" y="346" width="236" height="32" rx="6"/>
+<text x="702" y="367" text-anchor="middle" class="mono c-purple">state: values · errors · touched</text>
+<rect class="box" x="32" y="480" width="140" height="50" rx="8"/>
+<text x="102" y="501" text-anchor="middle" class="tb">Input</text>
+<text x="102" y="521" text-anchor="middle" class="mono">name="title"</text>
+<rect class="box" x="196" y="480" width="140" height="50" rx="8"/>
+<text x="266" y="501" text-anchor="middle" class="tb">Input</text>
+<text x="266" y="521" text-anchor="middle" class="mono">name="author"</text>
+<rect class="box" x="360" y="480" width="140" height="50" rx="8"/>
+<text x="430" y="501" text-anchor="middle" class="tb">RatingStars</text>
+<text x="430" y="521" text-anchor="middle" class="mono">value=4</text>
+<rect class="box" x="524" y="480" width="140" height="50" rx="8"/>
+<text x="594" y="501" text-anchor="middle" class="tb">Textarea</text>
+<text x="594" y="521" text-anchor="middle" class="mono">name="note"</text>
+<rect class="box" x="688" y="480" width="140" height="50" rx="8"/>
+<text x="758" y="501" text-anchor="middle" class="tb">Button</text>
+<text x="758" y="521" text-anchor="middle" class="mono">type="submit"</text>
+<line class="ln ln-blue" x1="102" y1="384" x2="102" y2="476" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="266" y1="384" x2="266" y2="476" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="560" y1="384" x2="560" y2="476" marker-end="url(#arrow-blue)"/>
+<line class="ln ln-blue" x1="410" y1="384" x2="410" y2="476" marker-end="url(#arrow-blue)"/>
+<text x="402" y="424" text-anchor="end" class="mono c-blue">value=</text>
+<text x="402" y="443" text-anchor="end" class="mono c-blue">{values.rating}</text>
+<line class="ln ln-green" x1="450" y1="480" x2="450" y2="388" marker-end="url(#arrow-green)"/>
+<text x="458" y="424" class="mono c-green">onChange(4)</text>
+<text x="458" y="443" class="mono c-green">→ setRating</text>
+<line class="ln ln-blue" x1="790" y1="384" x2="790" y2="476" marker-end="url(#arrow-blue)"/>
+<text x="782" y="424" text-anchor="end" class="mono c-blue">disabled={submitting}</text>
+<text x="782" y="443" text-anchor="end" class="mono c-blue">loading={submitting}</text>
+<text x="24" y="562" class="ts">파란 = props(부모→자식) · 초록 = 콜백(자식이 부모가 준 함수를 불러 알림) · 보라 = 그 컴포넌트가 가진 state</text>
+<text x="24" y="582" class="ts">회색 선 = 화면 안에 품고 있음(넘기는 props 없음)</text>
+</svg>

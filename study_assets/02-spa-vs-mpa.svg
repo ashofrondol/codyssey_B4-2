@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="608" viewBox="0 0 860 608" role="img" aria-labelledby="title desc">
+<title id="title">MPA 와 SPA — 무엇을 다시 받는가</title>
+<desc id="desc">MPA 는 클릭할 때마다 서버에서 HTML 문서 전체를 다시 받는다. 이 과제의 SPA 는 첫 접속에 문서·JS·CSS 를 한 번 받고, 이후 '독서 목록'·카드 클릭 때는 fetch 로 데이터만 받으며 같은 문서(window.__marker)가 유지된다(실측). F5 나 주소 직접 입력 때만 문서를 다시 받으므로 서버가 모든 경로에 index.html 을 돌려줘야 한다(vercel.json).</desc>
+<style>
+  text{font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;font-size:15px;fill:#1D1F23}
+  .bg{fill:#FFFFFF}
+  .ts{font-size:13px;fill:#5B6069}
+  .th{font-size:17px;font-weight:700}
+  .tb{font-weight:700}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,"Noto Sans Mono CJK KR",monospace;font-size:13.5px}
+  .box{fill:#F4F3EF;stroke:#9A9CA3;stroke-width:1.5}
+  .zone{fill:#FAF9F6;stroke:#C9C6BE;stroke-width:1.2;stroke-dasharray:5 4}
+  .blue{fill:#E7EFF9;stroke:#1F5FAD;stroke-width:1.6}
+  .green{fill:#E6F4EC;stroke:#1B7F4B;stroke-width:1.6}
+  .orange{fill:#FCEFE0;stroke:#B25E09;stroke-width:1.6}
+  .red{fill:#FCEBEA;stroke:#B42318;stroke-width:1.6}
+  .purple{fill:#F1EAFB;stroke:#6E3FB0;stroke-width:1.6}
+  .yellow{fill:#FFF3C4;stroke:#A07800;stroke-width:1.6}
+  .c-blue{fill:#1F5FAD}.c-green{fill:#1B7F4B}.c-orange{fill:#B25E09}.c-red{fill:#B42318}.c-purple{fill:#6E3FB0}.c-muted{fill:#5B6069}
+  .ln{stroke:#6B7078;stroke-width:1.6;fill:none}
+  .ln-blue{stroke:#1F5FAD}.ln-green{stroke:#1B7F4B}.ln-red{stroke:#B42318}.ln-orange{stroke:#B25E09}.ln-purple{stroke:#6E3FB0}
+  .dash{stroke-dasharray:6 5}
+  .ah{fill:#6B7078}.ah-blue{fill:#1F5FAD}.ah-green{fill:#1B7F4B}.ah-red{fill:#B42318}.ah-orange{fill:#B25E09}.ah-purple{fill:#6E3FB0}
+  @media (prefers-color-scheme:dark){
+    text{fill:#E8E6E1}
+    .bg{fill:#1A1C20}
+    .ts{fill:#A9A69F}
+    .box{fill:#24262B;stroke:#6B6E76}
+    .zone{fill:#1F2125;stroke:#43464D}
+    .blue{fill:#1B2940;stroke:#7FB0F0}
+    .green{fill:#16281E;stroke:#5FC98E}
+    .orange{fill:#2E2215;stroke:#E8A05A}
+    .red{fill:#301A18;stroke:#F08A80}
+    .purple{fill:#251C33;stroke:#C3A0F0}
+    .yellow{fill:#2E2812;stroke:#E3C45C}
+    .c-blue{fill:#9CC4F5}.c-green{fill:#7ED3A3}.c-orange{fill:#EDB27A}.c-red{fill:#F4A39B}.c-purple{fill:#D2B8F4}.c-muted{fill:#A9A69F}
+    .ln{stroke:#8D9098}
+    .ln-blue{stroke:#7FB0F0}.ln-green{stroke:#5FC98E}.ln-red{stroke:#F08A80}.ln-orange{stroke:#E8A05A}.ln-purple{stroke:#C3A0F0}
+    .ah{fill:#8D9098}.ah-blue{fill:#7FB0F0}.ah-green{fill:#5FC98E}.ah-red{fill:#F08A80}.ah-orange{fill:#E8A05A}.ah-purple{fill:#C3A0F0}
+  }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-blue" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-red" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-green" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-orange" d="M0,0 L10,5 L0,10 z"/></marker>
+  <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah-purple" d="M0,0 L10,5 L0,10 z"/></marker>
+</defs>
+<rect class="bg" x="0" y="0" width="860" height="608"/>
+<text class="th" x="24" y="34">MPA 와 SPA — 클릭할 때 무엇을 다시 받는가</text>
+<text class="ts" x="24" y="56">왼쪽 = 사용자가 한 일 · 오른쪽 = 그때 브라우저가 서버에서 받아 온 것</text>
+<rect class="zone" x="24" y="72" width="812" height="136" rx="12"/>
+<rect class="box" x="40" y="84" width="160" height="32" rx="6"/>
+<text x="120" y="105" text-anchor="middle" class="tb">MPA (전통 방식)</text>
+<text x="216" y="105" class="ts c-orange">클릭할 때마다 화면이 하얗게 비었다가 다시 그려짐</text>
+<rect class="blue" x="48" y="126" width="200" height="32" rx="6"/>
+<text x="148" y="147" text-anchor="middle" class="c-blue">① '독서 목록' 클릭</text>
+<line class="ln" x1="248" y1="142" x2="292" y2="142" marker-end="url(#arrow)"/>
+<rect class="orange" x="296" y="126" width="200" height="32" rx="6"/>
+<text x="396" y="147" text-anchor="middle" class="tb c-orange">HTML 문서 전체</text>
+<text x="512" y="147" class="ts">서버가 새 페이지를 통째로 보냄</text>
+<rect class="blue" x="48" y="166" width="200" height="32" rx="6"/>
+<text x="148" y="187" text-anchor="middle" class="c-blue">② 책 클릭</text>
+<line class="ln" x1="248" y1="182" x2="292" y2="182" marker-end="url(#arrow)"/>
+<rect class="orange" x="296" y="166" width="200" height="32" rx="6"/>
+<text x="396" y="187" text-anchor="middle" class="tb c-orange">HTML 문서 전체</text>
+<text x="512" y="187" class="ts">또 통째로 · 앱 상태는 매번 처음부터</text>
+<rect class="zone" x="24" y="224" width="812" height="336" rx="12"/>
+<rect class="box" x="40" y="236" width="160" height="32" rx="6"/>
+<text x="120" y="257" text-anchor="middle" class="tb">SPA (이 과제)</text>
+<text x="216" y="257" class="ts">실측: 빌드본을 헤드리스 크롬으로 열고, 브라우저가 보낸 요청을 기록</text>
+<rect class="blue" x="48" y="280" width="200" height="50" rx="8"/>
+<text x="148" y="310" text-anchor="middle" class="c-blue">① 첫 접속 (주소 /)</text>
+<line class="ln" x1="248" y1="305" x2="292" y2="305" marker-end="url(#arrow)"/>
+<rect class="box" x="296" y="280" width="380" height="50" rx="8"/>
+<text x="486" y="302" text-anchor="middle" class="tb">앱 전체 — 딱 1번</text>
+<text x="486" y="321" text-anchor="middle" class="mono">document · index-….js · index-….css</text>
+<rect class="blue" x="48" y="338" width="200" height="50" rx="8"/>
+<text x="148" y="368" text-anchor="middle" class="c-blue">② '독서 목록' 클릭</text>
+<line class="ln" x1="248" y1="363" x2="292" y2="363" marker-end="url(#arrow)"/>
+<rect class="green" x="296" y="338" width="380" height="50" rx="8"/>
+<text x="486" y="360" text-anchor="middle" class="tb c-green">데이터만 (fetch 1건)</text>
+<text x="486" y="379" text-anchor="middle" class="mono">GET /rest/v1/books?select=*&amp;order=created_at.desc</text>
+<rect class="blue" x="48" y="396" width="200" height="50" rx="8"/>
+<text x="148" y="426" text-anchor="middle" class="c-blue">③ 카드 클릭</text>
+<line class="ln" x1="248" y1="421" x2="292" y2="421" marker-end="url(#arrow)"/>
+<rect class="green" x="296" y="396" width="380" height="50" rx="8"/>
+<text x="486" y="418" text-anchor="middle" class="tb c-green">데이터만 (fetch 1건)</text>
+<text x="486" y="437" text-anchor="middle" class="mono">GET /rest/v1/books?select=*&amp;id=eq.2222…</text>
+<rect class="orange" x="48" y="454" width="200" height="50" rx="8"/>
+<text x="148" y="484" text-anchor="middle" class="c-orange">④ F5 / 주소 직접 입력</text>
+<line class="ln" x1="248" y1="479" x2="292" y2="479" marker-end="url(#arrow)"/>
+<rect class="orange" x="296" y="454" width="380" height="50" rx="8"/>
+<text x="486" y="476" text-anchor="middle" class="tb c-orange">문서부터 다시 받음</text>
+<text x="486" y="495" text-anchor="middle" class="mono">document GET /books/2222… + JS · CSS · fetch</text>
+<rect class="box" x="692" y="338" width="128" height="108" rx="8"/>
+<text x="756" y="364" text-anchor="middle" class="mono">window.__marker</text>
+<text x="756" y="383" text-anchor="middle" class="mono">= still-here</text>
+<text x="756" y="410" text-anchor="middle" class="ts">같은 문서가</text>
+<text x="756" y="428" text-anchor="middle" class="ts">그대로 유지됨</text>
+<rect class="box" x="692" y="454" width="128" height="50" rx="8"/>
+<text x="756" y="476" text-anchor="middle" class="mono">__marker</text>
+<text x="756" y="495" text-anchor="middle" class="ts">사라짐 (새 문서)</text>
+<text x="48" y="528" class="ts">④ 때 서버는 어떤 경로든 같은 index.html(200)을 준다 → 그 뒤 React Router 가 주소를 읽고 화면을 고른다</text>
+<text x="48" y="548" class="mono">vercel.json: /(.*) → /</text>
+<text x="24" y="588" class="ts">파란 = 사용자 행동 · 초록 = 데이터만 받음 · 주황 = 문서 전체를 (다시) 받음 · 회색 상자 = 첫 접속 1번</text>
+</svg>
